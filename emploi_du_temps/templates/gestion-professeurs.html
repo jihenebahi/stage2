@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des professeurs</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/gestion-professeurs.css' %}">
+    <style>
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* GLOBAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* CONTAINER */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color: #0f1e33;
+            color: white;
+            padding: 25px 20px;
+        }
+
+        .logo-box {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .logo-sidebar {
+            width: 120px;
+        }
+
+        .admin-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .small-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .sidebar hr {
+            border: 1px solid white;
+            margin: 25px 0;
+        }
+
+        .menu-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 7px 0;
+            font-size: 14px;
+        }
+
+        .sidebar a.active {
+            text-decoration: underline;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            font-weight: bold;
+        }
+
+        /* CONTENU */
+        .content {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #0f1e33;
+        }
+
+        /* SEARCH BAR */
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        /* BOUTON AJOUT */
+        .add-container {
+            margin-bottom: 20px;
+        }
+
+        /* BOUTONS AVEC <a> */
+        a.add-btn {
+            background-color: #0f1e33;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        a.add-btn:hover {
+            background-color: #1c2b4a;
+        }
+
+        /* TABLEAU */
+        .table-container {
+            background-color: #f4f6f8;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        thead {
+            background-color: #0f1e33;
+            color: white;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        tbody tr {
+            background-color: #ffffff;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #eef2f7;
+        }
+
+        /* BOUTONS ACTIONS DANS TABLEAU */
+        a.btn {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 13px;
+            transition: background-color 0.3s;
+        }
+
+        a.edit { 
+            background-color: #0f1e33;
+        }
+
+        a.edit:hover { 
+            background-color: #1c2b4a;
+        }
+
+        a.delete { 
+            background-color: #6c757d;
+        }
+
+        a.delete:hover { 
+            background-color: #555;
+        }
+
+        /* Style pour la matière */
+        .matiere-badge {
+            background: #0f1e33;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .matiere-vide {
+            color: #999;
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        /* Message vide */
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .empty-message a {
+            color: #0f1e33;
+            text-decoration: underline;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .table-container {
+                padding: 10px;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+        }
+
+            .alert-success {
+        background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+        color: #0d6832;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border-left: 5px solid #28a745;
+        margin-bottom: 20px;
+        font-weight: 500;
+        box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-box">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
+            </div>
+
+            <div class="admin-line">
+                <div class="small-avatar"></div>
+                <span>{{ request.user.username }}</span>
+            </div>
+
+            <hr>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <hr>
+
+            <p class="menu-title">GESTION</p>
+            <a href="{% url 'professeurs' %}" class="active">Gestion des professeurs</a>
+            <a href="{% url 'groupes' %}">Gestion des groupes</a>
+            <a href="{% url 'salles' %}">Gestion des salles</a>
+            <hr>
+            <a href="{% url 'seances' %}">Gestion des séances</a>
+            <hr>
+
+            <p class="menu-title">les séances réserver</p>
+            <a href="{% url 'emploi_salle' %}">Par salle</a>
+            <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+            <a href="{% url 'emploi_groupe' %}">Par groupe</a>
+            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <hr>
+
+            <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+        </aside>
+
+        <main class="content">
+            <h1>Gestion des professeurs</h1>
+            
+
+
+            {% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div class="alert-success">
+            ✓ {{ message }}
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+            <!-- Barre de recherche -->
+            <div class="search-bar">
+                <form method="get">
+                    <input type="text" name="search" 
+                           placeholder="Rechercher par nom, prénom ou matière..." 
+                           value="{{ search }}"
+                           aria-label="Rechercher un professeur">
+                    <button type="submit" style="display: none;">Rechercher</button>
+                </form>
+            </div>
+
+            <!-- Bouton Ajouter -->
+            <div class="add-container">
+                <a href="{% url 'ajouter_professeur' %}" class="add-btn">+ Ajouter un professeur</a>
+            </div>
+
+            <!-- Tableau -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            
+                            <th>Nom & Prénom</th>
+                            <th>Matière</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prof in professeurs %}
+                        <tr>
+                            
+                            <td>{{ prof.nom_complet }}</td>
+                            <td>
+                                {% if prof.matiere %}
+                                <span class="matiere-badge">{{ prof.matiere.nom }}</span>
+                                {% else %}
+                                <span class="matiere-vide">Aucune matière</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ prof.email }}</td>
+                            <td>{{ prof.telephone }}</td>
+                            <td>
+                                <a href="{% url 'modifier_professeur' prof.id %}" class="btn edit">Modifier</a>
+                                <a href="{% url 'supprimer_professeur' prof.id %}" class="btn delete"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce professeur ?')">
+                                   Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="empty-message">
+                                Aucun professeur trouvé.
+                                <br>
+                                <a href="{% url 'ajouter_professeur' %}">
+                                    Ajouter un premier professeur
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Information sur le nombre de résultats -->
+            {% if professeurs %}
+            <div style="margin-top: 15px; color: #666; font-size: 14px; text-align: center;">
+                {{ professeurs.count }} professeur{{ professeurs.count|pluralize:"s" }} trouvé{{ professeurs.count|pluralize:"s" }}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+    
+    <script>
+        // Script pour améliorer l'expérience utilisateur
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ajouter un effet de focus sur la barre de recherche
+            const searchInput = document.querySelector('input[name="search"]');
+            if (searchInput) {
+                searchInput.addEventListener('focus', function() {
+                    this.style.borderColor = '#0f1e33';
+                    this.style.boxShadow = '0 0 0 2px rgba(15, 30, 51, 0.1)';
+                });
+                
+                searchInput.addEventListener('blur', function() {
+                    this.style.borderColor = '#ccc';
+                    this.style.boxShadow = 'none';
+                });
+                
+                // Focus automatique sur la barre de recherche si elle a une valeur
+                if (searchInput.value) {
+                    searchInput.focus();
+                    searchInput.selectionStart = searchInput.selectionEnd = searchInput.value.length;
+                }
+            }
+            
+            // Confirmation avant suppression
+            const deleteButtons = document.querySelectorAll('a.delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Êtes-vous sûr de vouloir supprimer ce professeur ?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+            
+            // Mettre en évidence les lignes au survol
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-1px)';
+                    this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'none';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

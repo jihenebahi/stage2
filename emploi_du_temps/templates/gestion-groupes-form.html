@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titre }} groupe</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/gestion-groupes.css' %}">
+    <style>
+        /* GLOBAL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
+
+.logo-box {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.logo-sidebar {
+    width: 120px;
+}
+
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
+
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 7px 0;
+    font-size: 14px;
+}
+
+.sidebar a.active {
+    text-decoration: underline;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
+
+/* CONTENU */
+.content {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: #0f1e33;
+}
+
+/* SEARCH BAR */
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* BOUTON AJOUT */
+.add-container {
+    margin-bottom: 20px;
+}
+
+/* BOUTONS AVEC <a> */
+a.add-btn {
+    background-color: #0f1e33; /* bleu Cyberbar */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a.add-btn:hover {
+    background-color: #1c2b4a;
+}
+
+/* TABLEAU */
+.table-container {
+    background-color: #f4f6f8;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #0f1e33;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+}
+
+tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #eef2f7;
+}
+
+/* BOUTONS ACTIONS DANS TABLEAU */
+a.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+a.edit { 
+    background-color: #0f1e33; /* bleu Cyberbar */
+}
+
+a.edit:hover { 
+    background-color: #1c2b4a;
+}
+
+a.delete { 
+    background-color: #6c757d;
+}
+
+a.delete:hover { 
+    background-color: #555;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    color: #0f1e33;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #0f1e33; /* titre bleu Cyberbar */
+    text-align: center;
+}
+
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #0f1e33; /* bouton bleu Cyberbar */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-btn:hover {
+    background-color: #1c2b4a; /* hover plus foncé */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover { 
+    color: #0f1e33; 
+}
+.modal-content select {
+    width: 100%;          /* même largeur que les inputs */
+    padding: 8px;         /* même padding que les inputs */
+    border-radius: 5px;   /* coins arrondis comme les inputs */
+    border: 1px solid #ccc; /* même bordure */
+    margin-bottom: 15px;  /* même marge que les inputs */
+    font-family: Arial, sans-serif; /* même police */
+    font-size: 14px;      /* taille de texte similaire */
+}
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0f1e33;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+        }
+        .btn-submit {
+            background: #0f1e33;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-box">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
+            </div>
+
+            <div class="admin-line">
+                <div class="small-avatar"></div>
+                <span>{{ request.user.username }}</span>
+            </div>
+
+            <hr>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <hr>
+
+            <p class="menu-title">GESTION</p>
+            <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
+            <a href="{% url 'groupes' %}">Gestion des groupes</a>
+            <a href="{% url 'salles' %}">Gestion des salles</a>
+            <hr>
+            <a href="{% url 'seances' %}">Gestion des séances</a>
+            <hr>
+
+            <p class="menu-title">les séances réserver</p>
+            <a href="{% url 'emploi_salle' %}">Par salle</a>
+            <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+            <a href="{% url 'emploi_groupe' %}">Par groupe</a>
+            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <hr>
+
+            <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+        </aside>
+
+        <main class="content">
+            <h1>{{ titre }} un groupe</h1>
+            
+            {% if messages %}
+            <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 5px; margin-bottom: 20px;">
+                {% for message in messages %}
+                <div>{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="form-container">
+                <form method="post" id="groupe-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.nom.id_for_label }}">Nom du groupe</label>
+                        {{ form.nom }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.professeur.id_for_label }}">Professeur</label>
+                        {{ form.professeur }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.matiere.id_for_label }}">Matière</label>
+                        {{ form.matiere }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.nombre_etudiants.id_for_label }}">Nombre d'élèves</label>
+                        {{ form.nombre_etudiants }}
+                    </div>
+                    
+                    <div class="form-actions">
+                        <a href="{% url 'groupes' %}" class="btn-cancel">Annuler</a>
+                        <button type="submit" class="btn-submit">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const professeurSelect = document.getElementById('id_professeur');
+        const matiereSelect = document.getElementById('id_matiere');
+        
+        function updateMatieres() {
+            const professeurId = professeurSelect.value;
+            
+            if (professeurId) {
+                fetch(`/professeurs/${professeurId}/matieres/`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Erreur réseau');
+                        return response.json();
+                    })
+                    .then(data => {
+                        matiereSelect.innerHTML = '<option value="">---------</option>';
+                        
+                        if (data.length > 0) {
+                            data.forEach(matiere => {
+                                const option = document.createElement('option');
+                                option.value = matiere.id;
+                                option.textContent = matiere.nom;
+                                matiereSelect.appendChild(option);
+                            });
+                            
+                            // Si on est en mode modification, sélectionner la matière actuelle
+                            const currentMatiereId = "{{ form.instance.matiere.id|default:'' }}";
+                            if (currentMatiereId) {
+                                matiereSelect.value = currentMatiereId;
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        matiereSelect.innerHTML = '<option value="">---------</option>';
+                    });
+            } else {
+                matiereSelect.innerHTML = '<option value="">---------</option>';
+            }
+        }
+        
+        if (professeurSelect) {
+            professeurSelect.addEventListener('change', updateMatieres);
+            
+            // Initialiser au chargement si un professeur est déjà sélectionné
+            if (professeurSelect.value) {
+                updateMatieres();
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
+
+/* LOGO */
+.logo-box {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.logo-sidebar {
+    width: 120px;
+}
+
+/* ADMIN LINE */
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+/* SEPARATEURS */
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
+
+/* TEXTES */
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 12px 0; /* PLUS D’ESPACE */
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+    background-color: white;
+
+    /* CENTRAGE TOTAL */
+    display: flex;
+    justify-content: center;   /* horizontal */
+    align-items: center;       /* vertical */
+}
+
+.stats {
+    display: flex;
+    gap: 30px;
+}
+
+.card {
+    width: 260px;   /* PLUS GRAND */
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.card p {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+/* COULEURS */
+.dark {
+    background-color: #1c2b4a;
+}
+
+.gray {
+    background-color: #6c757d;
+}
+
+.blue {
+    background-color: #2a5bd7;
+}

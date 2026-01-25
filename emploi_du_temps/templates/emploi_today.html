@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color: #0f1e33;
+            color: white;
+            padding: 25px 20px;
+        }
+
+        .logo-box { text-align: center; margin-bottom: 5px; }
+        .logo-sidebar { width: 120px; }
+        .admin-line { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .small-avatar { width: 35px; height: 35px; background-color: white; border-radius: 50%; }
+        .sidebar hr { border: 1px solid white; margin: 25px 0; }
+        .menu-title { font-weight: bold; margin-bottom: 15px; font-size: 14px; }
+        .sidebar a { display: block; color: white; text-decoration: none; margin: 7px 0; font-size: 14px; }
+        .sidebar a:hover { text-decoration: underline; }
+        .logout { font-weight: bold; }
+
+        /* CONTENT */
+        .content {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* EMPLOI DU TEMPS */
+        .today-schedule { width: 100%; max-width: 900px; margin-top: 20px; }
+        .today-schedule h2 { color: #0f1e33; margin-bottom: 15px; text-align: center; }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .schedule-table th, .schedule-table td { padding: 12px; text-align: center; border-bottom: 1px solid #ddd; }
+        .schedule-table th { background-color: #1c2b4a; color: white; }
+        .schedule-table tr:hover { background-color: #e9ecef; }
+        .empty { font-style: italic; color: gray; text-align: center; margin-top: 10px; }
+
+        /* GRAPHIQUES */
+        .charts-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        .chart-box {
+            flex: 1 1 400px;
+            max-width: 450px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+        .chart-box h2 {
+            text-align: center;
+            color: #0f1e33;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-box">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
+            </div>
+
+            <div class="admin-line">
+                <div class="small-avatar"></div>
+                <span>{{ request.user.username }}</span>
+            </div>
+
+            <hr>
+            <a href="{% url 'dashboard' %}" class="active">Dashboard</a>
+            <hr>
+            
+
+            <p class="menu-title">GESTION</p>
+            <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
+            <a href="{% url 'groupes' %}">Gestion des groupes</a>
+            <a href="{% url 'salles' %}">Gestion des salles</a>
+            <hr>
+            <a href="{% url 'seances' %}">Gestion des séances</a>
+            <hr>
+
+            <p class="menu-title">les séances réserver</p>
+            <a href="{% url 'emploi_salle' %}">Par salle</a>
+            <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+            <a href="{% url 'emploi_groupe' %}">Par groupe</a>
+            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <hr>
+
+            <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="content">
+            <h1 style="color: #0f1e33; margin-bottom: 30px; text-align: center;">Emploi du temps d’aujourd’hui</h1>
+
+            <!-- TABLEAU -->
+            <div class="today-schedule">
+                {% if seances_today %}
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Heure</th>
+                            <th>Groupe</th>
+                            <th>Professeur</th>
+                            <th>Matière</th>
+                            <th>Salle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for seance in seances_today %}
+                        <tr>
+                            <td>{{ seance.heure_debut }} - {{ seance.heure_fin }}</td>
+                            <td>{{ seance.groupe.nom }}</td>
+                            <td>{{ seance.groupe.professeur.nom_complet }}</td>
+                            <td>{{ seance.groupe.matiere.nom }}</td>
+                            <td>{{ seance.salle.nom }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p class="empty">Aucune séance prévue aujourd’hui.</p>
+                {% endif %}
+            </div>
+
+            
+        </main>
+    </div>
+</body>
+</html>

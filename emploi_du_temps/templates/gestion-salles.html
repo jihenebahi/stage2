@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des salles</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/gestion-salles.css' %}">
+    <style>
+        /* GLOBAL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
+
+.logo-box {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.logo-sidebar {
+    width: 120px;
+}
+
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
+
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 7px 0;
+    font-size: 14px;
+}
+
+.sidebar a.active {
+    text-decoration: underline;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
+
+/* CONTENU */
+.content {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: #0f1e33;
+}
+
+/* SEARCH BAR */
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* BOUTON AJOUT */
+.add-container {
+    margin-bottom: 20px;
+}
+
+/* BOUTONS AVEC <a> */
+a.add-btn {
+    background-color: #0f1e33; /* bleu Cyberbar */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a.add-btn:hover {
+    background-color: #1c2b4a;
+}
+
+/* TABLEAU */
+.table-container {
+    background-color: #f4f6f8;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #0f1e33;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+}
+
+tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #eef2f7;
+}
+
+/* BOUTONS ACTIONS DANS TABLEAU */
+a.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+a.edit { 
+    background-color: #0f1e33; /* bleu Cyberbar */
+}
+
+a.edit:hover { 
+    background-color: #1c2b4a;
+}
+
+a.delete { 
+    background-color: #6c757d;
+}
+
+a.delete:hover { 
+    background-color: #555;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    color: #0f1e33;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #0f1e33; /* titre bleu Cyberbar */
+    text-align: center;
+}
+
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #0f1e33; /* bouton bleu Cyberbar */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-btn:hover {
+    background-color: #1c2b4a; /* hover plus foncé */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover { 
+    color: #0f1e33; 
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-box">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
+            </div>
+
+            <div class="admin-line">
+                <div class="small-avatar"></div>
+                <span>{{ request.user.username }}</span>
+            </div>
+
+            <hr>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <hr>
+
+            <p class="menu-title">GESTION</p>
+            <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
+            <a href="{% url 'groupes' %}">Gestion des groupes</a>
+            <a href="{% url 'salles' %}" class="active">Gestion des salles</a>
+            <hr>
+            <a href="{% url 'seances' %}">Gestion des séances</a>
+            <hr>
+
+            <p class="menu-title">les séances réserver</p>
+            <a href="{% url 'emploi_salle' %}">Par salle</a>
+            <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+            <a href="{% url 'emploi_groupe' %}">Par groupe</a>
+            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>            
+            <hr>
+
+            <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+        </aside>
+
+        <main class="content">
+            <h1>Gestion des salles</h1>
+            
+            {% if messages %}
+            <div>
+                {% for message in messages %}
+                <div>{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Barre de recherche -->
+            <div class="search-bar">
+                <form method="get">
+                    <input type="text" name="search" placeholder="Rechercher une salle..." 
+                           value="{{ search }}">
+                </form>
+            </div>
+
+            <!-- Bouton Ajouter -->
+            <div class="add-container">
+                <a href="{% url 'ajouter_salle' %}" class="add-btn">+ Ajouter une salle</a>
+            </div>
+
+            <!-- Tableau -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom de la salle</th>
+                            <th>Capacité</th>
+                            <th>Séances programmées</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for salle in salles %}
+                        <tr>
+                            <td>{{ salle.id }}</td>
+                            <td>{{ salle.nom }}</td>
+                            <td>{{ salle.capacite }} places</td>
+                            <td>{{ salle.seances.count }}</td>
+                            <td>
+                                <a href="{% url 'modifier_salle' salle.id %}" class="btn edit">Modifier</a>
+                                <a href="{% url 'supprimer_salle' salle.id %}" class="btn delete"
+                                   onclick="return confirm('Supprimer cette salle ?')">
+                                   Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 30px; color: #666;">
+                                Aucune salle trouvée.
+                                <br>
+                                <a href="{% url 'ajouter_salle' %}" style="color: #0f1e33; text-decoration: underline;">
+                                    Ajouter une première salle
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

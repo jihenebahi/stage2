@@ -1,0 +1,200 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
+
+.logo-box {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.logo-sidebar {
+    width: 120px;
+}
+
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
+
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 12px 0;
+    font-size: 14px;
+}
+
+.sidebar a.active {
+    text-decoration: underline;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 40px;
+}
+
+h1 {
+    margin-bottom: 25px;
+    color: #0f1e33;
+}
+
+/* FORM INLINE */
+.form-inline-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.form-inline-container select,
+.form-inline-container input {
+    width: 160px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* ADD BUTTON */
+.add-btn {
+    background-color: #0f1e33;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* TABLE */
+.table-container {
+    background-color: #f4f6f8;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #0f1e33;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+}
+
+tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+/* ACTION BUTTONS */
+a.btn {
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+}
+
+a.edit {
+    background-color: #0f1e33;
+}
+
+a.delete {
+    background-color: #6c757d;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: white;
+    width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #0f1e33;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.close {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}

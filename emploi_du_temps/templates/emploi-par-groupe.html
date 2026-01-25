@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Emploi du temps - Par groupe</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/emploi-du-temps.css' %}">
+        <style>
+                * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color: #0f1e33;
+            color: white;
+            padding: 25px 20px;
+        }
+        
+        .logo-box {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .logo-sidebar {
+            width: 120px;
+        }
+        
+        .admin-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .small-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        .sidebar hr {
+            border: 1px solid white;
+            margin: 25px 0;
+        }
+        
+        .menu-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 7px 0;
+            font-size: 14px;
+        }
+        
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+        
+        .sidebar a.active {
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .logout {
+            font-weight: bold;
+        }
+        
+        /* CONTENT */
+        .content {
+            flex: 1;
+            padding: 30px;
+            background-color: #f4f6f8;
+            overflow-y: auto;
+        }
+        
+        h1 {
+            margin-bottom: 25px;
+            color: #0f1e33;
+        }
+        
+        /* FILTER BAR */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        .filter-bar select, 
+        .filter-bar input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-width: 180px;
+        }
+        
+        .btn-show, .btn-pdf {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-show {
+            background-color: #0f1e33;
+            color: white;
+        }
+        
+        .btn-pdf {
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        /* TABLE */
+        .table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background-color: #0f1e33;
+            color: white;
+        }
+        
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* SALLE INFO */
+        .salle-info {
+            background: #e3f2fd;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .salle-info h3 {
+            color: #0f1e33;
+            margin: 0;
+        }
+        
+        .salle-info p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+        
+        .badge {
+            background: #0f1e33;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .stats {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <aside class="sidebar">
+        <div class="logo-box">
+            <img src="{% static 'images/logo.png' %}" class="logo-sidebar">
+        </div>
+
+        <div class="admin-line">
+            <div class="small-avatar"></div>
+            <span>{{ request.user.username }}</span>
+        </div>
+
+        <hr>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <hr>
+
+        <p class="menu-title">GESTION</p>
+        <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
+        <a href="{% url 'groupes' %}">Gestion des groupes</a>
+        <a href="{% url 'salles' %}">Gestion des salles</a>
+        <hr>
+        <a href="{% url 'seances' %}">Gestion des séances</a>
+        <hr>
+
+        <p class="menu-title">les séances réserver</p>
+        <a href="{% url 'emploi_salle' %}">Par salle</a>
+        <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+        <a href="{% url 'emploi_groupe' %}" class="active">Par groupe</a>
+        <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+        <hr>
+
+        <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+    </aside>
+
+    <main class="content">
+        <h1>Emploi du temps — Par groupe</h1>
+
+        <!-- FILTRE AUTO -->
+        <form method="get" class="filter-bar">
+            <select name="groupe" onchange="this.form.submit()">
+                <option value="">Choisir un groupe</option>
+                {% for groupe in groupes %}
+                <option value="{{ groupe.id }}"
+                    {% if groupe_id == groupe.id|stringformat:"s" %}selected{% endif %}>
+                    {{ groupe.nom }} - {{ groupe.professeur.nom_complet }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        {% if groupe_selectionne %}
+        <div class="salle-info">
+            <div>
+                <h3>Groupe : {{ groupe_selectionne.nom }}</h3>
+                <p>Matière : {{ groupe_selectionne.matiere.nom }}</p>
+                <p>Professeur : {{ groupe_selectionne.professeur.nom_complet }}</p>
+            </div>
+            <span class="badge">{{ total_seances }} séance{{ total_seances|pluralize:"s" }}</span>
+        </div>
+        {% endif %}
+
+        <div class="table-container">
+            {% if seances %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Heure</th>
+                        <th>Professeur</th>
+                        <th>Matière</th>
+                        <th>Salle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seance in seances %}
+                    <tr>
+                        <td>{{ seance.date|date:"d/m/Y" }}</td>
+                        <td>{{ seance.heure_debut|time:"H:i" }} - {{ seance.heure_fin|time:"H:i" }}</td>
+                        <td>{{ seance.groupe.professeur.nom_complet }}</td>
+                        <td>{{ seance.groupe.matiere.nom }}</td>
+                        <td>{{ seance.salle.nom }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <p>Sélectionnez un groupe pour voir son emploi du temps.</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Background blanc */
+body {
+    background-color: #ffffff;
+    height: 100vh;
+}
+
+/* Centrage */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Carré bleu */
+.login-box {
+    background-color: #0f1e33; /* bleu du logo */
+    width: 350px;
+    padding: 40px 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Logo */
+.logo {
+    width: 120px;
+    margin-bottom: 25px;
+}
+
+/* Champs */
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+/* Bouton */
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    color: #0f1e33;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-box button:hover {
+    background-color: #e6e6e6;
+}
+.btn-login {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    color: #0f1e33;
+    text-align: center;
+    text-decoration: none; /* enlève le soulignement */
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #e6e6e6;
+}

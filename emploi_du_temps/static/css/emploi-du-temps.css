@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
+
+/* LOGO */
+.logo-box {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.logo-sidebar {
+    width: 120px;
+}
+
+/* ADMIN LINE */
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+/* SEPARATEURS */
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
+
+/* TEXTES */
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 12px 0; /* PLUS D’ESPACE */
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+    padding: 30px;
+    background-color: #f4f6f8;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+/* FILTER BAR */
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-bar select {
+    padding: 8px;
+    width: 200px;
+}
+
+.btn-show, .btn-pdf {
+    padding: 8px 15px;
+    border: none;
+    background-color: #0f1e33;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* SCHEDULE GRID */
+.schedule {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 140px repeat(5, 1fr);
+    border-bottom: 1px solid #ddd;
+}
+
+.row.header {
+    background-color: #0f1e33;
+    color: white;
+    font-weight: bold;
+}
+
+.cell {
+    padding: 10px;
+    border-right: 1px solid #ddd;
+    min-height: 70px;
+}
+
+.cell.time {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+/* SESSION BLOCK */
+.session {
+    background-color: #dbeafe;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+}

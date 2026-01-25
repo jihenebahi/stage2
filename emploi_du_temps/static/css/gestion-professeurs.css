@@ -1,0 +1,246 @@
+/* GLOBAL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
+
+.logo-box {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.logo-sidebar {
+    width: 120px;
+}
+
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
+
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 12px 0;
+    font-size: 14px;
+}
+
+.sidebar a.active {
+    text-decoration: underline;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
+
+/* CONTENU */
+.content {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: #0f1e33;
+}
+
+/* SEARCH BAR */
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* BOUTON AJOUT */
+.add-container {
+    margin-bottom: 20px;
+}
+
+/* BOUTONS AVEC <a> */
+a.add-btn {
+    background-color: #0f1e33; /* bleu Cyberbar */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a.add-btn:hover {
+    background-color: #1c2b4a;
+}
+
+/* TABLEAU */
+.table-container {
+    background-color: #f4f6f8;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #0f1e33;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+}
+
+tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #eef2f7;
+}
+
+/* BOUTONS ACTIONS DANS TABLEAU */
+a.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+a.edit { 
+    background-color: #0f1e33; /* bleu Cyberbar */
+}
+
+a.edit:hover { 
+    background-color: #1c2b4a;
+}
+
+a.delete { 
+    background-color: #6c757d;
+}
+
+a.delete:hover { 
+    background-color: #555;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    color: #0f1e33;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #0f1e33; /* titre bleu Cyberbar */
+    text-align: center;
+}
+
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #0f1e33; /* bouton bleu Cyberbar */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-btn:hover {
+    background-color: #1c2b4a; /* hover plus foncé */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover { 
+    color: #0f1e33; 
+}

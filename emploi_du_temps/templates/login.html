@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Background blanc */
+body {
+    background-color: #ffffff;
+    height: 100vh;
+}
+
+/* Centrage */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Carré bleu */
+.login-box {
+    background-color: #0f1e33; /* bleu du logo */
+    width: 350px;
+    padding: 40px 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Logo */
+.logo {
+    width: 120px;
+    margin-bottom: 25px;
+}
+
+/* Champs */
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+/* Bouton */
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    color: #0f1e33;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-box button:hover {
+    background-color: #e6e6e6;
+}
+.btn-login {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    color: #0f1e33;
+    text-align: center;
+    text-decoration: none; /* enlève le soulignement */
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #e6e6e6;
+}
+
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+            
+            <form method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                <div class="error-message" style="color: white; margin-bottom: 15px; background: #ff6b6b; padding: 10px; border-radius: 5px;">
+                    Identifiants incorrects. Veuillez réessayer.
+                </div>
+                {% endif %}
+                
+                <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+                <input type="password" name="password" placeholder="Mot de passe" required>
+                
+                <button type="submit" class="btn-login">Se connecter</button>
+            </form>
+            
+            {% if messages %}
+            <div style="margin-top: 15px;">
+                {% for message in messages %}
+                <div >
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

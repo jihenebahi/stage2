@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des séances</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/gestion-seances.css' %}">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
+
+.logo-box {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.logo-sidebar {
+    width: 120px;
+}
+
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
+
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 7px 0;
+    font-size: 14px;
+}
+
+.sidebar a.active {
+    text-decoration: underline;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 40px;
+}
+
+h1 {
+    margin-bottom: 25px;
+    color: #0f1e33;
+}
+
+/* FORM INLINE */
+.form-inline-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.form-inline-container select,
+.form-inline-container input {
+    width: 160px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* ADD BUTTON */
+.add-btn {
+    background-color: #0f1e33;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* TABLE */
+.table-container {
+    background-color: #f4f6f8;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #0f1e33;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+}
+
+tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+/* ACTION BUTTONS */
+a.btn {
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+}
+
+a.edit {
+    background-color: #0f1e33;
+}
+
+a.delete {
+    background-color: #6c757d;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: white;
+    width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #0f1e33;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.close {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+        .filter-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #0f1e33;
+        }
+        .filter-group select, .filter-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 180px;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-filter {
+            background: #0f1e33;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .session-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-valid {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-conflict {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .alert-success {
+        background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+        color: #0d6832;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border-left: 5px solid #28a745;
+        margin-bottom: 20px;
+        font-weight: 500;
+        box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-box">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
+            </div>
+
+            <div class="admin-line">
+                <div class="small-avatar"></div>
+                <span>{{ request.user.username }}</span>
+            </div>
+
+            <hr>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <hr>
+
+            <p class="menu-title">GESTION</p>
+            <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
+            <a href="{% url 'groupes' %}">Gestion des groupes</a>
+            <a href="{% url 'salles' %}">Gestion des salles</a>
+            <hr>
+            <a href="{% url 'seances' %}" class="active">Gestion des séances</a>
+            <hr>
+
+            <p class="menu-title">les séances réserver</p>
+            <a href="{% url 'emploi_salle' %}">Par salle</a>
+            <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+            <a href="{% url 'emploi_groupe' %}">Par groupe</a>
+            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <hr>
+
+            <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+        </aside>
+
+        <main class="content">
+            <h1>Gestion des séances</h1>
+            
+                       {% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div class="alert-success">
+            ✓ {{ message }}
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+            <!-- Filtres --
+            <div class="filter-form">
+                <form method="get">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Date</label>
+                            <input type="date" name="date" value="{{ date_filter }}">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Salle</label>
+                            <select name="salle">
+                                <option value="">Toutes les salles</option>
+                                {% for salle in salles %}
+                                <option value="{{ salle.id }}" {% if salle_filter == salle.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ salle.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Professeur</label>
+                            <select name="professeur">
+                                <option value="">Tous les professeurs</option>
+                                {% for prof in professeurs %}
+                                <option value="{{ prof.id }}" {% if professeur_filter == prof.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ prof.nom_complet }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-actions">
+                            <button type="submit" class="btn-filter">Filtrer</button>
+                            <a href="{% url 'seances' %}" class="btn-reset">Réinitialiser</a>
+                        </div>
+                    </div>
+                </form>
+            </div>-->
+
+            <!-- Bouton Ajouter -->
+            <div class="add-container" style="margin-bottom: 20px;">
+                <a href="{% url 'ajouter_seance' %}" class="add-btn">+ Ajouter une séance</a>
+            </div>
+
+            <!-- Tableau -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                       
+                
+<tr>
+    <th>Groupe</th>
+    <th>Professeur</th>
+    <th>Salle</th>
+    <th>Date</th>
+    <th>Heure début</th>
+    <th>Heure fin</th>
+    <th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+{% for seance in seances %}
+<tr>
+    <td>{{ seance.groupe.nom }}</td>
+    <td>{{ seance.groupe.professeur.nom_complet }}</td>
+    <td>{{ seance.salle.nom }}</td>
+    <td>{{ seance.date|date:"d/m/Y" }}</td>
+    <td>{{ seance.heure_debut|time:"H:i" }}</td>
+    <td>{{ seance.heure_fin|time:"H:i" }}</td>
+    <td>
+        <a href="{% url 'modifier_seance' seance.id %}" class="btn edit">Modifier</a>
+        <a href="{% url 'supprimer_seance' seance.id %}" class="btn delete"
+           onclick="return confirm('Supprimer cette séance ?')">
+            Supprimer
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="empty-state">Aucune séance trouvée.</td>
+</tr>
+{% endfor %}
+</tbody>
+
+                </table>
+            </div>
+            
+            {% if seances %}
+            <div style="margin-top: 20px; color: #666; font-size: 14px;">
+                Total : {{ seances|length }} séance{{ seances|pluralize:"s" }}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

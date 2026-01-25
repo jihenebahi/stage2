@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+        body, html { height:100%; }
+
+        .container { display:flex; height:100vh; }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color:#0f1e33;
+            color:white;
+            display:flex;
+            flex-direction:column;
+            padding:15px 20px;
+        }
+        .logo-box { text-align:center; margin-bottom:5px; }
+        .logo-sidebar { width:120px; }
+        .admin-line { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+        .small-avatar { width:30px; height:30px; background:white; border-radius:50%; }
+        .sidebar hr { border:1px solid white; margin:15px 0; }
+        .menu-title { font-weight:bold; margin-bottom:8px; font-size:14px; }
+        .sidebar a { display:block; color:white; text-decoration:none; margin:7px 0; font-size:14px; }
+        .sidebar a:hover { text-decoration:underline; }
+        .logout { font-weight:bold; margin-top:auto; }
+
+        /* CONTENT */
+        .content {
+            flex:1;
+            background:white;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            padding:20px 30px;
+            overflow-y:auto;
+        }
+
+        /* CHARTS */
+        .charts-container {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+            justify-content:center;
+            margin-top:20px;
+        }
+        .chart-box {
+            flex: 1 1 300px;  /* largeur minimale 300px, flexible */
+            max-width: 400px; /* largeur maximale */
+            background:#f9f9f9;
+            padding:15px;
+            border-radius:10px;
+            box-shadow:0px 2px 8px rgba(0,0,0,0.1);
+        }
+        .chart-box h2 {
+            text-align:center;
+            color:#0f1e33;
+            margin-bottom:10px;
+            font-size:16px;
+        }
+        .chart-box canvas {
+            width: 100% !important;
+            height: 250px !important; /* hauteur fixe pour tous les graphiques */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-box">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
+        </div>
+
+        <div class="admin-line">
+            <div class="small-avatar"></div>
+            <span>{{ request.user.username }}</span>
+        </div>
+
+        <hr>
+        <a href="{% url 'dashboard' %}" class="active">Dashboard</a>
+        <hr>
+
+        <p class="menu-title">GESTION</p>
+        <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
+        <a href="{% url 'groupes' %}">Gestion des groupes</a>
+        <a href="{% url 'salles' %}">Gestion des salles</a>
+        <hr>
+        <a href="{% url 'seances' %}">Gestion des séances</a>
+        <hr>
+
+        <p class="menu-title">Les séances réservées</p>
+        <a href="{% url 'emploi_salle' %}">Par salle</a>
+        <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+        <a href="{% url 'emploi_groupe' %}">Par groupe</a>
+        <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+        <hr>
+
+        <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+        <h1 style="color:#0f1e33; text-align:center; margin-bottom:15px;">Dashboard</h1>
+
+        <div class="charts-container">
+            <!-- Salle la plus utilisée -->
+            <div class="chart-box">
+                <h2>Salle la plus utilisée</h2>
+                <canvas id="salleChart"></canvas>
+            </div>
+
+            <!-- Professeur le plus chargé -->
+            <div class="chart-box">
+                <h2>Professeur le plus chargé</h2>
+                <canvas id="profChart"></canvas>
+            </div>
+
+            <!-- Groupes les plus chargés -->
+            <div class="chart-box">
+                <h2>Groupes les plus chargés</h2>
+                <canvas id="groupeChart"></canvas>
+            </div>
+
+            <!-- Séances par jour (7 prochains jours) -->
+            <div class="chart-box">
+                <h2>Séances par jour</h2>
+                <canvas id="seancesParJourChart"></canvas>
+            </div>
+        </div>
+
+        <!-- SCRIPT CHART.JS -->
+        <script>
+            // Salle la plus utilisée
+            const salleLabels = [{% for salle in salles_stats %}"{{ salle.nom }}",{% endfor %}];
+            const salleData = [{% for salle in salles_stats %}{{ salle.total_seances }},{% endfor %}];
+            new Chart(document.getElementById('salleChart').getContext('2d'), {
+                type:'bar',
+                data:{ labels:salleLabels, datasets:[{ label:'Nombre de séances', data:salleData, backgroundColor:'rgba(255,99,132,0.5)', borderColor:'rgba(255,99,132,1)', borderWidth:1 }]},
+                options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{precision:0}}} }
+            });
+
+            // Professeur le plus chargé
+            const profLabels = [{% for prof in prof_stats %}"{{ prof.nom_complet }}",{% endfor %}];
+            const profData = [{% for prof in prof_stats %}{{ prof.total_seances }},{% endfor %}];
+            new Chart(document.getElementById('profChart').getContext('2d'), {
+                type:'bar',
+                data:{ labels:profLabels, datasets:[{ label:'Nombre de séances', data:profData, backgroundColor:'rgba(153,102,255,0.5)', borderColor:'rgba(153,102,255,1)', borderWidth:1 }]},
+                options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{precision:0}}} }
+            });
+
+            // Groupes les plus chargés (Pie)
+            const groupeLabels = [{% for groupe in groupe_stats %}"{{ groupe.nom }}",{% endfor %}];
+            const groupeData = [{% for groupe in groupe_stats %}{{ groupe.total_seances }},{% endfor %}];
+            new Chart(document.getElementById('groupeChart').getContext('2d'), {
+                type:'pie',
+                data:{
+                    labels:groupeLabels,
+                    datasets:[{
+                        data:groupeData,
+                        backgroundColor:[
+                            'rgba(255,99,132,0.5)',
+                            'rgba(54,162,235,0.5)',
+                            'rgba(255,206,86,0.5)',
+                            'rgba(75,192,192,0.5)',
+                            'rgba(153,102,255,0.5)',
+                            'rgba(255,159,64,0.5)'
+                        ],
+                        borderColor:[
+                            'rgba(255,99,132,1)',
+                            'rgba(54,162,235,1)',
+                            'rgba(255,206,86,1)',
+                            'rgba(75,192,192,1)',
+                            'rgba(153,102,255,1)',
+                            'rgba(255,159,64,1)'
+                        ],
+                        borderWidth:1
+                    }]
+                },
+                options:{ responsive:true, plugins:{legend:{position:'bottom'}} }
+            });
+
+            // Séances par jour (7 prochains jours)
+const seancesParJourCtx = document.getElementById('seancesParJourChart').getContext('2d');
+new Chart(seancesParJourCtx, {
+    type: 'line',
+    data: {
+        labels: [
+            {% for date in dates_futures %}
+                "{{ date }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Nombre de séances',
+            data: [
+                {% for nb in nb_seances_futures %}
+                    {{ nb }},
+                {% endfor %}
+            ],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+            tension: 0.8,  // <-- valeur augmentée pour courbe plus douce
+            pointRadius: 5,
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: true } },
+        scales: {
+            y: { beginAtZero: true, ticks:{precision:0} }
+        }
+    }
+});
+
+        </script>
+    </main>
+</div>
+</body>
+</html>

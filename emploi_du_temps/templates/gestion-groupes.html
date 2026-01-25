@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des groupes</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/gestion-groupes.css' %}">
+    <style>
+        /* Style juste pour les messages de succès */
+        .alert-success {
+            background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+            color: #0d6832;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border-left: 5px solid #28a745;
+            margin-bottom: 20px;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
+        }
+        .sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 7px 0;
+    font-size: 14px;
+}
+.logo-box {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-box">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
+            </div>
+
+            <div class="admin-line">
+                <div class="small-avatar"></div>
+                <span>{{ request.user.username }}</span>
+            </div>
+
+            <hr>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <hr>
+
+            <p class="menu-title">GESTION</p>
+            <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
+            <a href="{% url 'groupes' %}" class="active">Gestion des groupes</a>
+            <a href="{% url 'salles' %}">Gestion des salles</a>
+            <hr>
+            <a href="{% url 'seances' %}">Gestion des séances</a>
+            <hr>
+
+            <p class="menu-title">les séances réserver</p>
+            <a href="{% url 'emploi_salle' %}">Par salle</a>
+            <a href="{% url 'emploi_professeur' %}">Par professeur</a>
+            <a href="{% url 'emploi_groupe' %}">Par groupe</a>
+            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <hr>
+
+            <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
+        </aside>
+
+        <main class="content">
+            <h1>Gestion des groupes</h1>
+            
+            <!-- Messages de succès seulement -->
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                    <div class="alert-success">
+                        ✓ {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <!-- Barre de recherche -->
+            <div class="search-bar">
+                <form method="get">
+                    <input type="text" name="search" placeholder="Rechercher un groupe..." 
+                           value="{{ search }}">
+                </form>
+            </div>
+
+            <!-- Bouton Ajouter -->
+            <div class="add-container">
+                <a href="{% url 'ajouter_groupe' %}" class="add-btn">+ Ajouter un groupe</a>
+            </div>
+
+            <!-- Tableau -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Professeur</th>
+                            <th>Matière</th>
+                            <th>Nombre d'élèves</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for groupe in groupes %}
+                        <tr>
+                            <td>{{ groupe.nom }}</td>
+                            <td>{{ groupe.professeur.nom_complet }}</td>
+                            <td>{{ groupe.matiere.nom }}</td>
+                            <td>{{ groupe.nombre_etudiants }}</td>
+                            <td>
+                                <a href="{% url 'modifier_groupe' groupe.id %}" class="btn edit">Modifier</a>
+                                <a href="{% url 'supprimer_groupe' groupe.id %}" class="btn delete"
+                                   onclick="return confirm('Supprimer ce groupe ?')">
+                                   Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 30px; color: #666;">
+                                Aucun groupe trouvé.
+                                <br>
+                                <a href="{% url 'ajouter_groupe' %}" style="color: #0f1e33; text-decoration: underline;">
+                                    Ajouter un premier groupe
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
