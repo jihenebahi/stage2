@@ -284,6 +284,13 @@ a.delete {
         font-weight: 500;
         box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
     }
+  .seance-passee td {
+    text-decoration: line-through;
+    color: #888;
+    background-color: #f8d7da;
+}
+
+
     </style>
 </head>
 <body>
@@ -398,7 +405,8 @@ a.delete {
 
 <tbody>
 {% for seance in seances %}
-<tr>
+<tr class="{% if seance.est_passee %}seance-passee{% endif %}">
+
     <td>{{ seance.groupe.nom }}</td>
     <td>{{ seance.groupe.professeur.nom_complet }}</td>
     <td>{{ seance.salle.nom }}</td>

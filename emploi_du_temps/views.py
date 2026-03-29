@@ -289,39 +289,72 @@ def supprimer_salle(request, id):
 
 @login_required
 def liste_seances(request):
-    """Liste des séances (suppression auto des séances passées)"""
-    for seance in Seance.objects.all():
-        if seance.est_passee():
-            seance.delete()
-
+    """Liste des séances (sans suppression automatique)"""
+    
     seances = Seance.objects.all()
+    
     return render(request, 'gestion-seances.html', {
         'seances': seances
     })
 
 
+
 @login_required
 def ajouter_seance(request):
-    from datetime import datetime
+    from datetime import datetime, timedelta, date
     from django.utils import timezone
 
-    now = timezone.localtime()  # Heure actuelle locale
+    now = timezone.localtime()
+    solutions = []
 
     if request.method == 'POST':
         form = SeanceForm(request.POST)
         if form.is_valid():
             seance = form.save(commit=False)
-            
+
             # Vérification date + heure déjà passée
-            if seance.date == date.today() and seance.heure_debut <= now.time():
-                messages.error(request, "Impossible d'ajouter une séance avec une heure déjà passée.")
-            elif seance.date < date.today():
+            if seance.date < date.today() or (seance.date == date.today() and seance.heure_debut <= now.time()):
                 messages.error(request, "Impossible d'ajouter une séance dans le passé.")
             else:
                 conflits = seance.valider_seance()
+                
                 if conflits:
+                    # Afficher les conflits
                     for conflit in conflits:
                         messages.error(request, conflit)
+
+                    # 🔹 Si le conflit est la salle (occupée ou capacité insuffisante)
+                    if "Salle" in " ".join(conflits) or "Capacité" in " ".join(conflits):
+                        salles_disponibles = Salle.objects.exclude(
+                            seances__date=seance.date,
+                            seances__heure_debut__lt=seance.heure_fin,
+                            seances__heure_fin__gt=seance.heure_debut
+                        ).filter(
+                            capacite__gte=seance.groupe.nombre_etudiants
+                        )
+                        if salles_disponibles.exists():
+                            solutions.append(
+                                f"Salles disponibles à cette date/heure avec capacité suffisante : "
+                                f"{', '.join(s.nom for s in salles_disponibles)}"
+                            )
+
+                    # 🔹 Si le conflit est le groupe ou le prof occupé, proposer une date proche
+                    if "Professeur" in " ".join(conflits) or "Groupe" in " ".join(conflits):
+                        # Recherche jusqu'à 7 jours plus tard
+                        for delta in range(1, 8):
+                            futur_date = seance.date + timedelta(days=delta)
+                            conflits_futurs = Seance.objects.filter(
+                                date=futur_date,
+                                groupe=seance.groupe
+                            ) | Seance.objects.filter(
+                                date=futur_date,
+                                groupe__professeur=seance.groupe.professeur
+                            )
+                            if not conflits_futurs.exists():
+                                solutions.append(
+                                    f"Le groupe et le professeur sont libres le {futur_date}"
+                                )
+                                break
                 else:
                     seance.save()
                     messages.success(request, 'Séance ajoutée avec succès')
@@ -331,8 +364,11 @@ def ajouter_seance(request):
 
     return render(request, 'gestion-seances-form.html', {
         'form': form,
-        'titre': 'Ajouter'
+        'titre': 'Ajouter',
+        'solutions': solutions,
+        'conflits': conflits if 'conflits' in locals() else None
     })
+
 
 
 

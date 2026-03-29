@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>{{ titre }} professeur</title>
     {% load static %}
+
     <style>
-        /* GLOBAL */
         * {
             margin: 0;
             padding: 0;
@@ -13,80 +13,93 @@
             font-family: Arial, sans-serif;
         }
 
-        /* CONTAINER */
+        body {
+            background: #f5f6fa;
+        }
+
         .container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 270px;
-            background-color: #0f1e33;
-            color: white;
-            padding: 25px 20px;
-        }
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
-        .logo-box {
-            text-align: center;
-            margin-bottom: 5px;
-        }
+/* CONTAINER */
+.container {
+    display: flex;
+    height: 100vh;
+}
 
-        .logo-sidebar {
-            width: 120px;
-        }
+/* SIDEBAR */
+.sidebar {
+    width: 270px;
+    background-color: #0f1e33;
+    color: white;
+    padding: 25px 20px;
+}
 
-        .admin-line {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+.logo-box {
+    text-align: center;
+    margin-bottom: 5px;
+}
 
-        .small-avatar {
-            width: 35px;
-            height: 35px;
-            background-color: white;
-            border-radius: 50%;
-        }
+.logo-sidebar {
+    width: 120px;
+}
 
-        .sidebar hr {
-            border: 1px solid white;
-            margin: 25px 0;
-        }
+.admin-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
 
-        .menu-title {
-            font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
+.small-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    border-radius: 50%;
+}
 
-        .sidebar a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            margin: 7px 0;
-            font-size: 14px;
-        }
+.sidebar hr {
+    border: 1px solid white;
+    margin: 25px 0;
+}
 
-        .sidebar a.active {
-            text-decoration: underline;
-        }
+.menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
 
-        .sidebar a:hover {
-            text-decoration: underline;
-        }
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 7px 0;
+    font-size: 14px;
+}
 
-        .logout {
-            font-weight: bold;
-        }
+.sidebar a.active {
+    text-decoration: underline;
+}
 
-        /* CONTENU */
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.logout {
+    font-weight: bold;
+}
         .content {
             flex: 1;
-            background-color: #ffffff;
             padding: 40px;
-            overflow-y: auto;
+            background: white;
         }
 
         h1 {
@@ -102,53 +115,53 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #0f1e33;
         }
-        .form-group input, .form-group select {
+
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
-            box-sizing: border-box;
+            background-color: #fff;
+            transition: border 0.2s ease;
         }
-        .form-group input.error, .form-group select.error {
-            border-color: #dc3545;
-            background-color: #f8d7da;
+
+        /* ERREUR : seulement bordure rouge */
+        .form-group input.error,
+        .form-group select.error {
+            border: 2px solid #dc3545;
+            background-color: #ffffff;
         }
+
         .error-message {
             color: #dc3545;
             font-size: 12px;
             margin-top: 5px;
             display: none;
         }
+
         .error-message.show {
             display: block;
         }
+
         .form-actions {
             display: flex;
             gap: 15px;
             margin-top: 30px;
         }
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+
         .btn-submit {
             background: #0f1e33;
             color: white;
@@ -159,46 +172,28 @@
             font-weight: bold;
             flex: 1;
         }
-        .btn-submit:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        .error-list {
-            color: #dc3545;
-            background: #f8d7da;
-            padding: 15px;
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
             border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid #f5c6cb;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
         }
-        .alert {
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+
+        .btn-submit:hover {
+            opacity: 0.9;
         }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        /* Format téléphone */
-        .phone-format {
-            color: #666;
-            font-size: 12px;
-            margin-top: 5px;
-            font-style: italic;
-        }
+
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <aside class="sidebar">
+
+<div class="container">
+    <aside class="sidebar">
             <div class="logo-box">
                 <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
             </div>
@@ -215,7 +210,7 @@
             <p class="menu-title">GESTION</p>
             <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
             <a href="{% url 'groupes' %}">Gestion des groupes</a>
-            <a href="{% url 'salles' %}">Gestion des salles</a>
+            <a href="{% url 'salles' %}" class="active">Gestion des salles</a>
             <hr>
             <a href="{% url 'seances' %}">Gestion des séances</a>
             <hr>
@@ -224,273 +219,152 @@
             <a href="{% url 'emploi_salle' %}">Par salle</a>
             <a href="{% url 'emploi_professeur' %}">Par professeur</a>
             <a href="{% url 'emploi_groupe' %}">Par groupe</a>
-            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>            
             <hr>
 
             <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
         </aside>
 
-        <main class="content">
-            <h1>{{ titre }} un professeur</h1>
-            
-            {% if messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {% for message in messages %}
-                <div>{{ message }}</div>
-                {% endfor %}
+<main class="content">
+    <h1>{{ titre }} un professeur</h1>
+
+    <div class="form-container">
+        <form method="post" id="professeurForm">
+            {% csrf_token %}
+
+            <!-- NOM -->
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" name="nom" id="id_nom" value="{{ form.nom.value|default:'' }}">
+                <div class="error-message" id="nom_error"></div>
             </div>
-            {% endif %}
-            
-            <div class="form-container">
-                <form method="post" id="professeurForm">
-                    {% csrf_token %}
-                    
-                    {% if form.non_field_errors %}
-                    <div class="error-list">
-                        {% for error in form.non_field_errors %}
-                        <div>{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    
-                    <div class="form-group">
-                        <label for="id_nom">Nom *</label>
-                        <input type="text" name="nom" id="id_nom" 
-                               value="{{ form.nom.value|default_if_none:'' }}"
-                               class="{% if form.nom.errors %}error{% endif %}"
-                               placeholder="Entrez le nom">
-                        <div class="error-message {% if form.nom.errors %}show{% endif %}" id="nom_error">
-                            {% for error in form.nom.errors %}
-                            {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_prenom">Prénom *</label>
-                        <input type="text" name="prenom" id="id_prenom"
-                               value="{{ form.prenom.value|default_if_none:'' }}"
-                               class="{% if form.prenom.errors %}error{% endif %}"
-                               placeholder="Entrez le prénom">
-                        <div class="error-message {% if form.prenom.errors %}show{% endif %}" id="prenom_error">
-                            {% for error in form.prenom.errors %}
-                            {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_email">Email *</label>
-                        <input type="email" name="email" id="id_email"
-                               value="{{ form.email.value|default_if_none:'' }}"
-                               class="{% if form.email.errors %}error{% endif %}"
-                               placeholder="exemple@domaine.com">
-                        <div class="error-message {% if form.email.errors %}show{% endif %}" id="email_error">
-                            {% for error in form.email.errors %}
-                            {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_telephone">Téléphone *</label>
-                        <input type="text" name="telephone" id="id_telephone"
-                               value="{{ form.telephone.value|default_if_none:'' }}"
-                               class="{% if form.telephone.errors %}error{% endif %}"
-                               placeholder="Ex: +21612345678, 0021612345678, ou 123456789">
-                        <div class="phone-format">Formats acceptés: +216XXXXXXXX, 00216XXXXXXXX, 216XXXXXXXX, ou XXXXXXXXX (9 chiffres)</div>
-                        <div class="error-message {% if form.telephone.errors %}show{% endif %}" id="telephone_error">
-                            {% for error in form.telephone.errors %}
-                            {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_matiere">Matière *</label>
-                        <select name="matiere" id="id_matiere" class="{% if form.matiere.errors %}error{% endif %}">
-                            <option value="">Choisir une matière</option>
-                            {% for matiere in matieres %}
-                            <option value="{{ matiere.id }}" 
-                                    {% if form.matiere.value|stringformat:"s" == matiere.id|stringformat:"s" %}selected{% endif %}>
-                                {{ matiere.nom }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                        <div class="error-message {% if form.matiere.errors %}show{% endif %}" id="matiere_error">
-                            {% for error in form.matiere.errors %}
-                            {{ error }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <a href="{% url 'professeurs' %}" class="btn-cancel">Annuler</a>
-                        <button type="submit" class="btn-submit" id="submitBtn">Enregistrer</button>
-                    </div>
-                </form>
+
+            <!-- PRENOM -->
+            <div class="form-group">
+                <label>Prénom *</label>
+                <input type="text" name="prenom" id="id_prenom" value="{{ form.prenom.value|default:'' }}">
+                <div class="error-message" id="prenom_error"></div>
             </div>
-        </main>
+
+            <!-- EMAIL -->
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}">
+                <div class="error-message" id="email_error"></div>
+            </div>
+
+            <!-- TELEPHONE -->
+            <div class="form-group">
+                <label>Téléphone *</label>
+                <input type="text" name="telephone" id="id_telephone" value="{{ form.telephone.value|default:'' }}">
+                <div class="error-message" id="telephone_error"></div>
+            </div>
+
+            <!-- MATIERE -->
+            <div class="form-group">
+                <label>Matière *</label>
+                <select name="matiere" id="id_matiere">
+                    <option value="">Choisir une matière</option>
+                    {% for matiere in matieres %}
+                        <option value="{{ matiere.id }}"
+                            {% if form.matiere.value == matiere.id %}selected{% endif %}>
+                            {{ matiere.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="error-message" id="matiere_error"></div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'professeurs' %}" class="btn-cancel">Annuler</a>
+                <button type="submit" class="btn-submit">Enregistrer</button>
+            </div>
+
+        </form>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('professeurForm');
-            const inputs = {
-                nom: document.getElementById('id_nom'),
-                prenom: document.getElementById('id_prenom'),
-                email: document.getElementById('id_email'),
-                telephone: document.getElementById('id_telephone'),
-                matiere: document.getElementById('id_matiere')
-            };
-            
-            const errors = {
-                nom: document.getElementById('nom_error'),
-                prenom: document.getElementById('prenom_error'),
-                email: document.getElementById('email_error'),
-                telephone: document.getElementById('telephone_error'),
-                matiere: document.getElementById('matiere_error')
-            };
-            
-            const submitBtn = document.getElementById('submitBtn');
-            
-            // Expressions régulières pour validation
-            const regex = {
-                alphabetic: /^[A-Za-zÀ-ÿ\s\'-]+$/,
-                email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                phone: /^(?:\+216|00216|216)?([2-9][0-9]{7})$/
-            };
-            
-            // Fonction de validation en temps réel
-            function validateField(field, value) {
-                const errorElement = errors[field];
-                const inputElement = inputs[field];
-                
-                // Masquer l'erreur par défaut
-                errorElement.classList.remove('show');
-                inputElement.classList.remove('error');
-                
-                if (!value.trim()) {
-                    showError(field, 'Ce champ est obligatoire');
-                    return false;
-                }
-                
-                switch(field) {
-                    case 'nom':
-                    case 'prenom':
-                        if (!regex.alphabetic.test(value)) {
-                            showError(field, 'Ne doit contenir que des lettres, espaces, apostrophes ou tirets');
-                            return false;
-                        }
-                        break;
-                        
-                    case 'email':
-                        if (!regex.email.test(value)) {
-                            showError(field, 'Format d\'email invalide');
-                            return false;
-                        }
-                        break;
-                        
-                    case 'telephone':
-                        const cleanedPhone = value.replace(/[\s\-\.]/g, '');
-                        if (!regex.phone.test(cleanedPhone)) {
-                            showError(field, 'Numéro de téléphone tunisien invalide');
-                            return false;
-                        }
-                        break;
-                        
-                    case 'matiere':
-                        if (value === '') {
-                            showError(field, 'Veuillez sélectionner une matière');
-                            return false;
-                        }
-                        break;
-                }
-                
-                return true;
-            }
-            
-            function showError(field, message) {
-                errors[field].textContent = message;
-                errors[field].classList.add('show');
-                inputs[field].classList.add('error');
-            }
-            
-            // Validation au changement
-            Object.keys(inputs).forEach(field => {
-                if (inputs[field]) {
-                    inputs[field].addEventListener('input', function() {
-                        validateField(field, this.value);
-                        updateSubmitButton();
-                    });
-                    
-                    inputs[field].addEventListener('blur', function() {
-                        validateField(field, this.value);
-                        updateSubmitButton();
-                    });
-                }
-            });
-            
-            // Validation de la matière au changement
-            if (inputs.matiere) {
-                inputs.matiere.addEventListener('change', function() {
-                    validateField('matiere', this.value);
-                    updateSubmitButton();
-                });
-            }
-            
-            // Mise à jour du bouton d'envoi
-            function updateSubmitButton() {
-                let isValid = true;
-                Object.keys(inputs).forEach(field => {
-                    if (inputs[field]) {
-                        if (!validateField(field, inputs[field].value)) {
-                            isValid = false;
-                        }
-                    }
-                });
-                
-                submitBtn.disabled = !isValid;
-            }
-            
-            // Validation à l'envoi du formulaire
-            form.addEventListener('submit', function(e) {
-                let formIsValid = true;
-                
-                Object.keys(inputs).forEach(field => {
-                    if (inputs[field]) {
-                        if (!validateField(field, inputs[field].value)) {
-                            formIsValid = false;
-                        }
-                    }
-                });
-                
-                if (!formIsValid) {
-                    e.preventDefault();
-                    alert('Veuillez corriger les erreurs dans le formulaire.');
-                }
-            });
-            
-            // Validation initiale
-            updateSubmitButton();
-            
-            // Formatage automatique du téléphone
-            if (inputs.telephone) {
-                inputs.telephone.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    
-                    // Si commence par 216, ajouter +
-                    if (value.startsWith('216') && value.length > 3) {
-                        value = '+' + value;
-                    }
-                    
-                    // Formatage visuel
-                    if (value.startsWith('+216') && value.length > 4) {
-                        e.target.value = value.substring(0, 4) + ' ' + value.substring(4);
-                    }
-                });
-            }
+</main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const inputs = {
+        nom: document.getElementById('id_nom'),
+        prenom: document.getElementById('id_prenom'),
+        email: document.getElementById('id_email'),
+        telephone: document.getElementById('id_telephone'),
+        matiere: document.getElementById('id_matiere')
+    };
+
+    const errors = {
+        nom: document.getElementById('nom_error'),
+        prenom: document.getElementById('prenom_error'),
+        email: document.getElementById('email_error'),
+        telephone: document.getElementById('telephone_error'),
+        matiere: document.getElementById('matiere_error')
+    };
+
+    const regex = {
+        alphabetic: /^[A-Za-zÀ-ÿ\s'-]+$/,
+        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        phone: /^(?:\+216|00216|216)?[2-9][0-9]{7}$/
+    };
+
+    function showError(field, message) {
+        inputs[field].classList.add('error');
+        errors[field].textContent = message;
+        errors[field].classList.add('show');
+    }
+
+    function clearError(field) {
+        inputs[field].classList.remove('error');
+        errors[field].classList.remove('show');
+    }
+
+    function validateField(field, value) {
+
+        clearError(field);
+
+        if (!value.trim()) {
+            showError(field, "Champ obligatoire");
+            return false;
+        }
+
+        if ((field === 'nom' || field === 'prenom') && !regex.alphabetic.test(value)) {
+            showError(field, "Seulement des lettres autorisées");
+            return false;
+        }
+
+        if (field === 'email' && !regex.email.test(value)) {
+            showError(field, "Email invalide");
+            return false;
+        }
+
+        if (field === 'telephone' && !regex.phone.test(value)) {
+            showError(field, "Téléphone invalide");
+            return false;
+        }
+
+        if (field === 'matiere' && value === "") {
+            showError(field, "Sélection obligatoire");
+            return false;
+        }
+
+        return true;
+    }
+
+    Object.keys(inputs).forEach(field => {
+        inputs[field].addEventListener('input', function() {
+            validateField(field, this.value);
         });
-    </script>
+
+        inputs[field].addEventListener('blur', function() {
+            validateField(field, this.value);
+        });
+    });
+
+});
+</script>
+
 </body>
 </html>

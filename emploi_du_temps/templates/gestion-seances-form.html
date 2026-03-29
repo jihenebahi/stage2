@@ -313,24 +313,30 @@ a.delete {
         <main class="content">
             <h1>{{ titre }} une séance</h1>
             
-            {% if conflits %}
-            <div class="conflict-list">
-                <strong>Conflits détectés :</strong>
-                <ul>
-                    {% for conflit in conflits %}
-                    <li>{{ conflit }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-            
-            {% if messages %}
-            <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 5px; margin-bottom: 20px;">
-                {% for message in messages %}
-                <div>{{ message }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
+            <!-- Bloc rouge pour les conflits -->
+    {% if conflits %}
+    <div class="conflict-list">
+        <strong>Conflits détectés :</strong>
+        <ul>
+            {% for conflit in conflits %}
+            <li>{{ conflit }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Bloc vert pour les solutions -->
+    {% if solutions %}
+    <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <strong>Solutions suggérées :</strong>
+        <ul>
+            {% for sol in solutions %}
+            <li>{{ sol }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
             
             <div class="form-container">
                    <form method="post">

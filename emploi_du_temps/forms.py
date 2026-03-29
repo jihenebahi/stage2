@@ -145,7 +145,7 @@ class SalleForm(forms.ModelForm):
         if Salle.objects.filter(nom=nom).exclude(id=salle_id).exists():
             raise forms.ValidationError("Une salle avec ce nom existe déjà")
         
-        return nom.strip().upper()
+        return nom.strip()
     
     def clean_capacite(self):
         capacite = self.cleaned_data.get('capacite')

@@ -281,6 +281,17 @@
         font-weight: 500;
         box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
     }
+    .alert-error {
+    background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
+    color: #a94442;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border-left: 5px solid #dc3545;
+    margin-bottom: 20px;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(220, 53, 69, 0.1);
+}
+
     </style>
 </head>
 <body>
@@ -322,15 +333,15 @@
             
 
 
-            {% if messages %}
+    {% if messages %}
     {% for message in messages %}
-        {% if message.tags == 'success' %}
-        <div class="alert-success">
-            ✓ {{ message }}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {% if message.tags == 'success' %}✓ {% endif %}
+            {{ message }}
         </div>
-        {% endif %}
     {% endfor %}
 {% endif %}
+
 
             <!-- Barre de recherche -->
             <div class="search-bar">

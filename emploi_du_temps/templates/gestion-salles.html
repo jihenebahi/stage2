@@ -252,6 +252,25 @@ a.delete:hover {
 .close:hover { 
     color: #0f1e33; 
 }
+  .alert-success {
+        background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+        color: #0d6832;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border-left: 5px solid #28a745;
+        margin-bottom: 20px;
+        font-weight: 500;
+        box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);}
+         .alert-error {
+    background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
+    color: #a94442;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border-left: 5px solid #dc3545;
+    margin-bottom: 20px;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(220, 53, 69, 0.1);
+}
 
     </style>
 </head>
@@ -292,13 +311,14 @@ a.delete:hover {
         <main class="content">
             <h1>Gestion des salles</h1>
             
-            {% if messages %}
-            <div>
-                {% for message in messages %}
-                <div>{{ message }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
+      {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {% if message.tags == 'success' %}✓ {% endif %}
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 
             <!-- Barre de recherche -->
             <div class="search-bar">
@@ -318,7 +338,7 @@ a.delete:hover {
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            
                             <th>Nom de la salle</th>
                             <th>Capacité</th>
                             <th>Séances programmées</th>
@@ -328,7 +348,7 @@ a.delete:hover {
                     <tbody>
                         {% for salle in salles %}
                         <tr>
-                            <td>{{ salle.id }}</td>
+                            
                             <td>{{ salle.nom }}</td>
                             <td>{{ salle.capacite }} places</td>
                             <td>{{ salle.seances.count }}</td>
