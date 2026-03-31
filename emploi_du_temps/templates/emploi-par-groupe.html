@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <title>Emploi du temps - Par groupe</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/emploi-du-temps.css' %}">
-        <style>
-                * {
+    <style>
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-        
+
         .container {
             display: flex;
             min-height: 100vh;
         }
-        
+
         /* SIDEBAR */
         .sidebar {
             width: 270px;
@@ -25,41 +24,41 @@
             color: white;
             padding: 25px 20px;
         }
-        
+
         .logo-box {
             text-align: center;
             margin-bottom: 5px;
         }
-        
+
         .logo-sidebar {
             width: 120px;
         }
-        
+
         .admin-line {
             display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
         }
-        
+
         .small-avatar {
             width: 35px;
             height: 35px;
             background-color: white;
             border-radius: 50%;
         }
-        
+
         .sidebar hr {
             border: 1px solid white;
             margin: 25px 0;
         }
-        
+
         .menu-title {
             font-weight: bold;
             margin-bottom: 15px;
             font-size: 14px;
         }
-        
+
         .sidebar a {
             display: block;
             color: white;
@@ -67,21 +66,21 @@
             margin: 7px 0;
             font-size: 14px;
         }
-        
+
         .sidebar a:hover {
             text-decoration: underline;
         }
-        
+
         .sidebar a.active {
             background: rgba(255,255,255,0.1);
             padding: 8px;
             border-radius: 4px;
         }
-        
+
         .logout {
             font-weight: bold;
         }
-        
+
         /* CONTENT */
         .content {
             flex: 1;
@@ -89,12 +88,12 @@
             background-color: #f4f6f8;
             overflow-y: auto;
         }
-        
+
         h1 {
             margin-bottom: 25px;
             color: #0f1e33;
         }
-        
+
         /* FILTER BAR */
         .filter-bar {
             display: flex;
@@ -103,65 +102,86 @@
             align-items: flex-end;
             flex-wrap: wrap;
         }
-        
-        .filter-bar select, 
-        .filter-bar input {
+
+        .filter-bar select {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             min-width: 180px;
         }
-        
-        .btn-show, .btn-pdf {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
+
+        /* ACTION BUTTONS */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: flex-end;
         }
-        
-        .btn-show {
-            background-color: #0f1e33;
-            color: white;
-        }
-        
+
         .btn-pdf {
-            background-color: #28a745;
+            background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
             text-decoration: none;
-            display: inline-block;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
         }
-        
+
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #20c997, #28a745);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
         /* TABLE */
         .table-container {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         thead {
             background-color: #0f1e33;
             color: white;
         }
-        
+
         th, td {
             padding: 14px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
-        
+
         tbody tr:hover {
             background-color: #f8f9fa;
         }
-        
-        /* SALLE INFO */
-        .salle-info {
+
+        /* Style pour les séances passées */
+        tr.seance-passee {
+            background-color: #f8d7da;
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        tr.seance-passee td {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        /* GROUPE INFO */
+        .groupe-info {
             background: #e3f2fd;
             padding: 15px 20px;
             border-radius: 8px;
@@ -169,18 +189,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        
-        .salle-info h3 {
+
+        .groupe-info h3 {
             color: #0f1e33;
             margin: 0;
         }
-        
-        .salle-info p {
+
+        .groupe-info p {
             margin: 5px 0 0 0;
             color: #666;
         }
-        
+
         .badge {
             background: #0f1e33;
             color: white;
@@ -188,14 +210,14 @@
             border-radius: 20px;
             font-weight: bold;
         }
-        
+
         /* EMPTY STATE */
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #666;
         }
-        
+
         .stats {
             margin-top: 20px;
             color: #666;
@@ -204,6 +226,56 @@
             background: #f8f9fa;
             border-radius: 5px;
         }
+
+        /* LEGENDE */
+        .legende {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .legende-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legende-passe {
+            width: 20px;
+            height: 20px;
+            background-color: #f8d7da;
+            border: 1px solid #dc3545;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -211,7 +283,7 @@
 <div class="container">
     <aside class="sidebar">
         <div class="logo-box">
-            <img src="{% static 'images/logo.png' %}" class="logo-sidebar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
         </div>
 
         <div class="admin-line">
@@ -244,25 +316,42 @@
     <main class="content">
         <h1>Emploi du temps — Par groupe</h1>
 
-        <!-- FILTRE AUTO -->
-        <form method="get" class="filter-bar">
-            <select name="groupe" onchange="this.form.submit()">
-                <option value="">Choisir un groupe</option>
-                {% for groupe in groupes %}
-                <option value="{{ groupe.id }}"
-                    {% if groupe_id == groupe.id|stringformat:"s" %}selected{% endif %}>
-                    {{ groupe.nom }} - {{ groupe.professeur.nom_complet }}
-                </option>
-                {% endfor %}
-            </select>
+        <form method="get">
+            <div class="filter-bar">
+                <div>
+                    <label style="display:block;margin-bottom:5px;font-weight:bold;color:#0f1e33;">
+                        Groupe
+                    </label>
+                    <select name="groupe" onchange="this.form.submit()">
+                        <option value="">Choisir un groupe</option>
+                        {% for groupe in groupes %}
+                        <option value="{{ groupe.id }}"
+                            {% if groupe_id == groupe.id|stringformat:"s" %}selected{% endif %}>
+                            {{ groupe.nom }} - {{ groupe.professeur.nom_complet }} - {{ groupe.matiere.nom }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </form>
 
+        <!-- Bouton PDF -->
         {% if groupe_selectionne %}
-        <div class="salle-info">
+        <div class="action-buttons">
+            <a href="{% url 'generer_pdf' %}?type=groupe&id={{ groupe_selectionne.id }}&date_debut={{ date_debut }}&date_fin={{ date_fin }}" 
+               class="btn-pdf" target="_blank">
+                📄 Exporter en PDF
+            </a>
+        </div>
+        {% endif %}
+
+        {% if groupe_selectionne %}
+        <div class="groupe-info">
             <div>
                 <h3>Groupe : {{ groupe_selectionne.nom }}</h3>
-                <p>Matière : {{ groupe_selectionne.matiere.nom }}</p>
                 <p>Professeur : {{ groupe_selectionne.professeur.nom_complet }}</p>
+                <p>Matière : {{ groupe_selectionne.matiere.nom }}</p>
+                <p>Nombre d'élèves : {{ groupe_selectionne.nombre_etudiants }}</p>
             </div>
             <span class="badge">{{ total_seances }} séance{{ total_seances|pluralize:"s" }}</span>
         </div>
@@ -275,29 +364,43 @@
                     <tr>
                         <th>Date</th>
                         <th>Heure</th>
+                        <th>Salle</th>
                         <th>Professeur</th>
                         <th>Matière</th>
-                        <th>Salle</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for seance in seances %}
-                    <tr>
+                    <tr {% if seance.est_passee %}class="seance-passee"{% endif %}>
                         <td>{{ seance.date|date:"d/m/Y" }}</td>
                         <td>{{ seance.heure_debut|time:"H:i" }} - {{ seance.heure_fin|time:"H:i" }}</td>
+                        <td>{{ seance.salle.nom }}</td>
                         <td>{{ seance.groupe.professeur.nom_complet }}</td>
                         <td>{{ seance.groupe.matiere.nom }}</td>
-                        <td>{{ seance.salle.nom }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            
+            <!-- Légende pour les séances passées -->
+            <div class="legende">
+                <div class="legende-item">
+                    <div class="legende-passe"></div>
+                    <span>Séance passée (barrée)</span>
+                </div>
+            </div>
             {% else %}
             <div class="empty-state">
                 <p>Sélectionnez un groupe pour voir son emploi du temps.</p>
             </div>
             {% endif %}
         </div>
+
+        {% if seances %}
+        <div class="stats">
+            <strong>Total :</strong> {{ total_seances }} séance{{ total_seances|pluralize:"s" }}
+        </div>
+        {% endif %}
     </main>
 </div>
 

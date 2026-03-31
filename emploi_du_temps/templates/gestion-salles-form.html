@@ -4,8 +4,105 @@
     <meta charset="UTF-8">
     <title>{{ titre }} salle</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/gestion-salles.css' %}">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f6fa;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color: #0f1e33;
+            color: white;
+            padding: 25px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo-box {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .logo-sidebar {
+            width: 120px;
+        }
+
+        .admin-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .small-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .sidebar hr {
+            border: 1px solid white;
+            margin: 25px 0;
+        }
+
+        .menu-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 7px 0;
+            font-size: 14px;
+        }
+
+        .sidebar a.active {
+            text-decoration: underline;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            font-weight: bold;
+        }
+
+        /* CONTENU PRINCIPAL */
+        .content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 40px;
+            background: white;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #0f1e33;
+        }
+
         .form-container {
             max-width: 600px;
             margin: 0 auto;
@@ -14,36 +111,68 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #0f1e33;
         }
+
+        .form-group label .required {
+            color: #dc3545;
+        }
+
         .form-group input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 12px;
+            border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
+            background-color: #fff;
+            transition: all 0.3s ease;
         }
+
+        .form-group input:focus {
+            border-color: #0f1e33;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(15, 30, 51, 0.1);
+        }
+
+        /* ERREUR */
+        .form-group input.error {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .error-message::before {
+            content: "⚠";
+            font-size: 12px;
+        }
+
         .form-actions {
             display: flex;
             gap: 15px;
             margin-top: 30px;
         }
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-            flex: 1;
-        }
+
         .btn-submit {
             background: #0f1e33;
             color: white;
@@ -53,6 +182,79 @@
             cursor: pointer;
             font-weight: bold;
             flex: 1;
+            transition: opacity 0.3s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+            transition: opacity 0.3s;
+        }
+
+        .btn-cancel:hover {
+            opacity: 0.9;
+        }
+
+        /* ALERTES */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+            color: #0d6832;
+            border-left: 5px solid #28a745;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
+            color: #a94442;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .alert::before {
+            font-size: 18px;
+        }
+        
+        .alert-success::before {
+            content: "✓";
+        }
+        
+        .alert-error::before {
+            content: "⚠";
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 20px;
+                height: auto;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -80,11 +282,11 @@
             <a href="{% url 'seances' %}">Gestion des séances</a>
             <hr>
 
-            <p class="menu-title">les séances réserver</p>
+            <p class="menu-title">Les séances réserver</p>
             <a href="{% url 'emploi_salle' %}">Par salle</a>
             <a href="{% url 'emploi_professeur' %}">Par professeur</a>
             <a href="{% url 'emploi_groupe' %}">Par groupe</a>
-            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <a href="{% url 'emploi_today' %}">Pour aujourd'hui</a>
             <hr>
 
             <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
@@ -94,25 +296,27 @@
             <h1>{{ titre }} une salle</h1>
             
             {% if messages %}
-            <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 5px; margin-bottom: 20px;">
                 {% for message in messages %}
-                <div>{{ message }}</div>
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
                 {% endfor %}
-            </div>
             {% endif %}
             
             <div class="form-container">
-                <form method="post">
+                <form method="post" id="salleForm">
                     {% csrf_token %}
                     
                     <div class="form-group">
-                        <label for="{{ form.nom.id_for_label }}">Nom de la salle</label>
-                        {{ form.nom }}
+                        <label for="id_nom">Nom de la salle <span class="required">*</span></label>
+                        <input type="text" name="nom" id="id_nom" value="{{ form.nom.value|default:'' }}" placeholder="Saisir le nom de la salle">
+                        <div class="error-message" id="nom_error"></div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.capacite.id_for_label }}">Capacité (nombre de places)</label>
-                        {{ form.capacite }}
+                        <label for="id_capacite">Capacité (nombre de places) <span class="required">*</span></label>
+                        <input type="number" name="capacite" id="id_capacite" value="{{ form.capacite.value|default:'' }}" min="1" max="1000" placeholder="Saisir le nombre de places">
+                        <div class="error-message" id="capacite_error"></div>
                     </div>
                     
                     <div class="form-actions">
@@ -123,5 +327,91 @@
             </div>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = {
+                nom: document.getElementById('id_nom'),
+                capacite: document.getElementById('id_capacite')
+            };
+
+            const errors = {
+                nom: document.getElementById('nom_error'),
+                capacite: document.getElementById('capacite_error')
+            };
+
+            function showError(field, message) {
+                inputs[field].classList.add('error');
+                errors[field].textContent = message;
+                errors[field].classList.add('show');
+            }
+
+            function clearError(field) {
+                inputs[field].classList.remove('error');
+                errors[field].classList.remove('show');
+            }
+
+            function validateField(field, value) {
+                clearError(field);
+
+                if (!value || value.trim() === '') {
+                    showError(field, "Champ obligatoire");
+                    return false;
+                }
+
+                if (field === 'nom') {
+                    if (value.length < 2) {
+                        showError(field, "Le nom doit contenir au moins 2 caractères");
+                        return false;
+                    }
+                }
+
+                if (field === 'capacite') {
+                    const num = parseInt(value);
+                    if (isNaN(num) || num < 1) {
+                        showError(field, "La capacité doit être supérieure à 0");
+                        return false;
+                    }
+                    if (num > 1000) {
+                        showError(field, "La capacité ne peut pas dépasser 1000");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            // Validation en temps réel
+            Object.keys(inputs).forEach(field => {
+                inputs[field].addEventListener('input', function() {
+                    validateField(field, this.value);
+                });
+
+                inputs[field].addEventListener('blur', function() {
+                    validateField(field, this.value);
+                });
+            });
+
+            // Validation du formulaire avant soumission
+            const form = document.getElementById('salleForm');
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                Object.keys(inputs).forEach(field => {
+                    if (!validateField(field, inputs[field].value)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    const firstError = document.querySelector('.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

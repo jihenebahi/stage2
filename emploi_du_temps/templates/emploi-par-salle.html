@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Emploi du temps - Par salle</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/emploi-du-temps.css' %}">
     <style>
         * {
             margin: 0;
@@ -111,12 +110,43 @@
             min-width: 180px;
         }
 
+        /* ACTION BUTTONS */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #6c9bd2, #7aa3c5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #5a8bc2, #6a98b8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 155, 210, 0.3);
+        }
+
         /* TABLE */
         .table-container {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
 
         table {
@@ -139,6 +169,18 @@
             background-color: #f8f9fa;
         }
 
+        /* Style pour les séances passées */
+        tr.seance-passee {
+            background-color: #f8d7da;
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        tr.seance-passee td {
+            text-decoration: line-through;
+            color: #888;
+        }
+
         /* SALLE INFO */
         .salle-info {
             background: #e3f2fd;
@@ -148,6 +190,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .salle-info h3 {
@@ -182,6 +226,56 @@
             padding: 10px;
             background: #f8f9fa;
             border-radius: 5px;
+        }
+
+        /* LEGENDE */
+        .legende {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .legende-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legende-passe {
+            width: 20px;
+            height: 20px;
+            background-color: #f8d7da;
+            border: 1px solid #dc3545;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -242,6 +336,16 @@
             </div>
         </form>
 
+        <!-- Bouton PDF -->
+        {% if salle_selectionnee %}
+        <div class="action-buttons">
+            <a href="{% url 'generer_pdf' %}?type=salle&id={{ salle_selectionnee.id }}&date_debut={{ date_debut }}&date_fin={{ date_fin }}" 
+               class="btn-pdf" target="_blank">
+                📄 Exporter en PDF
+            </a>
+        </div>
+        {% endif %}
+
         {% if salle_selectionnee %}
         <div class="salle-info">
             <div>
@@ -267,7 +371,7 @@
                 </thead>
                 <tbody>
                     {% for seance in seances %}
-                    <tr>
+                    <tr {% if seance.est_passee %}class="seance-passee"{% endif %}>
                         <td>{{ seance.date|date:"d/m/Y" }}</td>
                         <td>{{ seance.heure_debut|time:"H:i" }} - {{ seance.heure_fin|time:"H:i" }}</td>
                         <td>{{ seance.groupe.nom }}</td>
@@ -278,6 +382,14 @@
                     {% endfor %}
                 </tbody>
             </table>
+            
+            <!-- Légende pour les séances passées -->
+            <div class="legende">
+                <div class="legende-item">
+                    <div class="legende-passe"></div>
+                    <span>Séance passée (barrée)</span>
+                </div>
+            </div>
             {% else %}
             <div class="empty-state">
                 <p>Aucune séance trouvée pour cette salle.</p>
@@ -288,6 +400,11 @@
         {% if seances %}
         <div class="stats">
             <strong>Total :</strong> {{ total_seances }} séance{{ total_seances|pluralize:"s" }}
+            {% if seances_passees > 0 %}
+            <span style="color: #dc3545; margin-left: 15px;">
+                | Passées : {{ seances_passees }}
+            </span>
+            {% endif %}
         </div>
         {% endif %}
 

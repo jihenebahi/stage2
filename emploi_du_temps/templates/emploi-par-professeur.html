@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <title>Emploi du temps - Par professeur</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/emploi-du-temps.css' %}">
     <style>
-                * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-        
+
         .container {
             display: flex;
             min-height: 100vh;
         }
-        
+
         /* SIDEBAR */
         .sidebar {
             width: 270px;
@@ -25,41 +24,41 @@
             color: white;
             padding: 25px 20px;
         }
-        
+
         .logo-box {
             text-align: center;
             margin-bottom: 5px;
         }
-        
+
         .logo-sidebar {
             width: 120px;
         }
-        
+
         .admin-line {
             display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
         }
-        
+
         .small-avatar {
             width: 35px;
             height: 35px;
             background-color: white;
             border-radius: 50%;
         }
-        
+
         .sidebar hr {
             border: 1px solid white;
             margin: 25px 0;
         }
-        
+
         .menu-title {
             font-weight: bold;
             margin-bottom: 15px;
             font-size: 14px;
         }
-        
+
         .sidebar a {
             display: block;
             color: white;
@@ -67,21 +66,21 @@
             margin: 7px 0;
             font-size: 14px;
         }
-        
+
         .sidebar a:hover {
             text-decoration: underline;
         }
-        
+
         .sidebar a.active {
             background: rgba(255,255,255,0.1);
             padding: 8px;
             border-radius: 4px;
         }
-        
+
         .logout {
             font-weight: bold;
         }
-        
+
         /* CONTENT */
         .content {
             flex: 1;
@@ -89,12 +88,12 @@
             background-color: #f4f6f8;
             overflow-y: auto;
         }
-        
+
         h1 {
             margin-bottom: 25px;
             color: #0f1e33;
         }
-        
+
         /* FILTER BAR */
         .filter-bar {
             display: flex;
@@ -103,65 +102,87 @@
             align-items: flex-end;
             flex-wrap: wrap;
         }
-        
-        .filter-bar select, 
-        .filter-bar input {
+
+        .filter-bar select {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             min-width: 180px;
         }
-        
-        .btn-show, .btn-pdf {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
+
+        /* ACTION BUTTONS */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: flex-end;
         }
-        
-        .btn-show {
-            background-color: #0f1e33;
-            color: white;
-        }
-        
+
         .btn-pdf {
-            background-color: #28a745;
+            background: linear-gradient(135deg, #6c9bd2, #7aa3c5);
             color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
             text-decoration: none;
-            display: inline-block;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
+
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #5a8bc2, #6a98b8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 155, 210, 0.3);
+        }
+
         /* TABLE */
         .table-container {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         thead {
             background-color: #0f1e33;
             color: white;
         }
-        
+
         th, td {
             padding: 14px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
-        
+
         tbody tr:hover {
             background-color: #f8f9fa;
         }
-        
-        /* SALLE INFO */
-        .salle-info {
+
+        /* Style pour les séances passées */
+        tr.seance-passee {
+            background-color: #f8d7da;
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        tr.seance-passee td {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        /* PROF INFO */
+        .prof-info {
             background: #e3f2fd;
             padding: 15px 20px;
             border-radius: 8px;
@@ -169,18 +190,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        
-        .salle-info h3 {
+
+        .prof-info h3 {
             color: #0f1e33;
             margin: 0;
         }
-        
-        .salle-info p {
+
+        .prof-info p {
             margin: 5px 0 0 0;
             color: #666;
         }
-        
+
         .badge {
             background: #0f1e33;
             color: white;
@@ -188,14 +211,14 @@
             border-radius: 20px;
             font-weight: bold;
         }
-        
+
         /* EMPTY STATE */
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #666;
         }
-        
+
         .stats {
             margin-top: 20px;
             color: #666;
@@ -203,6 +226,56 @@
             padding: 10px;
             background: #f8f9fa;
             border-radius: 5px;
+        }
+
+        /* LEGENDE */
+        .legende {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .legende-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legende-passe {
+            width: 20px;
+            height: 20px;
+            background-color: #f8d7da;
+            border: 1px solid #dc3545;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -244,24 +317,41 @@
     <main class="content">
         <h1>Emploi du temps — Par professeur</h1>
 
-        <!-- FILTRE AUTO -->
-        <form method="get" class="filter-bar">
-            <select name="professeur" onchange="this.form.submit()">
-                <option value="">Choisir un professeur</option>
-                {% for prof in professeurs %}
-                <option value="{{ prof.id }}"
-                    {% if professeur_id == prof.id|stringformat:"s" %}selected{% endif %}>
-                    {{ prof.nom_complet }}
-                </option>
-                {% endfor %}
-            </select>
+        <form method="get">
+            <div class="filter-bar">
+                <div>
+                    <label style="display:block;margin-bottom:5px;font-weight:bold;color:#0f1e33;">
+                        Professeur
+                    </label>
+                    <select name="professeur" onchange="this.form.submit()">
+                        <option value="">Choisir un professeur</option>
+                        {% for prof in professeurs %}
+                        <option value="{{ prof.id }}"
+                            {% if professeur_id == prof.id|stringformat:"s" %}selected{% endif %}>
+                            {{ prof.nom_complet }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </form>
 
+        <!-- Bouton PDF -->
         {% if professeur_selectionne %}
-        <div class="salle-info">
+        <div class="action-buttons">
+            <a href="{% url 'generer_pdf' %}?type=professeur&id={{ professeur_selectionne.id }}&date_debut={{ date_debut }}&date_fin={{ date_fin }}" 
+               class="btn-pdf" target="_blank">
+                📄 Exporter en PDF
+            </a>
+        </div>
+        {% endif %}
+
+        {% if professeur_selectionne %}
+        <div class="prof-info">
             <div>
                 <h3>Professeur : {{ professeur_selectionne.nom_complet }}</h3>
                 <p>Email : {{ professeur_selectionne.email }}</p>
+                <p>Téléphone : {{ professeur_selectionne.telephone }}</p>
             </div>
             <span class="badge">{{ total_seances }} séance{{ total_seances|pluralize:"s" }}</span>
         </div>
@@ -282,7 +372,7 @@
                 </thead>
                 <tbody>
                     {% for seance in seances %}
-                    <tr>
+                    <tr {% if seance.est_passee %}class="seance-passee"{% endif %}>
                         <td>{{ seance.date|date:"d/m/Y" }}</td>
                         <td>{{ seance.heure_debut|time:"H:i" }} - {{ seance.heure_fin|time:"H:i" }}</td>
                         <td>{{ seance.groupe.nom }}</td>
@@ -293,12 +383,31 @@
                     {% endfor %}
                 </tbody>
             </table>
+            
+            <!-- Légende pour les séances passées -->
+            <div class="legende">
+                <div class="legende-item">
+                    <div class="legende-passe"></div>
+                    <span>Séance passée (barrée)</span>
+                </div>
+            </div>
             {% else %}
             <div class="empty-state">
                 <p>Sélectionnez un professeur pour voir son emploi du temps.</p>
             </div>
             {% endif %}
         </div>
+
+        {% if seances %}
+        <div class="stats">
+            <strong>Total :</strong> {{ total_seances }} séance{{ total_seances|pluralize:"s" }}
+            {% if seances_passees > 0 %}
+            <span style="color: #dc3545; margin-left: 15px;">
+                | Passées : {{ seances_passees }}
+            </span>
+            {% endif %}
+        </div>
+        {% endif %}
     </main>
 </div>
 

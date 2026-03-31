@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>{{ titre }} professeur</title>
     {% load static %}
-
     <style>
         * {
             margin: 0;
@@ -15,91 +14,88 @@
 
         body {
             background: #f5f6fa;
+            overflow: hidden; /* Supprime la scrollbar de la page */
         }
 
         .container {
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color: #0f1e33;
+            color: white;
+            padding: 25px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
 
-/* CONTAINER */
-.container {
-    display: flex;
-    height: 100vh;
-}
+        .logo-box {
+            text-align: center;
+            margin-bottom: 5px;
+        }
 
-/* SIDEBAR */
-.sidebar {
-    width: 270px;
-    background-color: #0f1e33;
-    color: white;
-    padding: 25px 20px;
-}
+        .logo-sidebar {
+            width: 120px;
+        }
 
-.logo-box {
-    text-align: center;
-    margin-bottom: 5px;
-}
+        .admin-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-.logo-sidebar {
-    width: 120px;
-}
+        .small-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+        }
 
-.admin-line {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
+        .sidebar hr {
+            border: 1px solid white;
+            margin: 25px 0;
+        }
 
-.small-avatar {
-    width: 35px;
-    height: 35px;
-    background-color: white;
-    border-radius: 50%;
-}
+        .menu-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
 
-.sidebar hr {
-    border: 1px solid white;
-    margin: 25px 0;
-}
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 7px 0;
+            font-size: 14px;
+        }
 
-.menu-title {
-    font-weight: bold;
-    margin-bottom: 15px;
-    font-size: 14px;
-}
+        .sidebar a.active {
+            text-decoration: underline;
+        }
 
-.sidebar a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    margin: 7px 0;
-    font-size: 14px;
-}
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
 
-.sidebar a.active {
-    text-decoration: underline;
-}
+        .logout {
+            font-weight: bold;
+        }
 
-.sidebar a:hover {
-    text-decoration: underline;
-}
-
-.logout {
-    font-weight: bold;
-}
+        /* CONTENU PRINCIPAL */
         .content {
             flex: 1;
+            margin-left: 270px;
             padding: 40px;
             background: white;
+            overflow-y: auto;
+            height: 100vh;
         }
 
         h1 {
@@ -127,22 +123,127 @@
             color: #0f1e33;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group label .required {
+            color: #dc3545;
+        }
+
+        .form-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
             background-color: #fff;
-            transition: border 0.2s ease;
+            transition: all 0.3s ease;
         }
 
-        /* ERREUR : seulement bordure rouge */
-        .form-group input.error,
-        .form-group select.error {
-            border: 2px solid #dc3545;
-            background-color: #ffffff;
+        .form-group input:focus {
+            border-color: #0f1e33;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(15, 30, 51, 0.1);
+        }
+
+        /* Style pour la recherche de matières */
+        .matiere-search {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .matiere-search input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            padding-left: 35px;
+        }
+
+        .matiere-search::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #999;
+            pointer-events: none;
+        }
+
+        .matiere-search input:focus {
+            border-color: #0f1e33;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(15, 30, 51, 0.1);
+        }
+
+        /* STYLE POUR LA LISTE DES MATIÈRES - 4 éléments visibles + scrollbar */
+        .matiere-list {
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: 160px; /* Hauteur pour 4 éléments */
+        }
+
+        .matiere-option {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .matiere-option:hover {
+            background-color: #eef2f7;
+        }
+
+        .matiere-option.selected {
+            background-color: #0f1e33;
+            color: white;
+        }
+
+        .matiere-option.selected .radio-custom {
+            border-color: white;
+        }
+
+        .radio-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #0f1e33;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+        }
+
+        .matiere-option.selected .radio-custom::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .matiere-name {
+            flex: 1;
+        }
+
+        .hidden-option {
+            display: none;
+        }
+
+        /* ERREUR */
+        .form-group input.error {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+
+        .matiere-list.error {
+            border-color: #dc3545;
+            background-color: #fff8f8;
         }
 
         .error-message {
@@ -150,10 +251,17 @@
             font-size: 12px;
             margin-top: 5px;
             display: none;
+            align-items: center;
+            gap: 5px;
         }
 
         .error-message.show {
-            display: block;
+            display: flex;
+        }
+
+        .error-message::before {
+            content: "⚠";
+            font-size: 12px;
         }
 
         .form-actions {
@@ -171,6 +279,16 @@
             cursor: pointer;
             font-weight: bold;
             flex: 1;
+            transition: opacity 0.3s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .btn-cancel {
@@ -181,19 +299,95 @@
             text-decoration: none;
             text-align: center;
             flex: 1;
+            transition: opacity 0.3s;
         }
 
-        .btn-submit:hover {
+        .btn-cancel:hover {
             opacity: 0.9;
         }
 
+        /* ALERTES */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+            color: #0d6832;
+            border-left: 5px solid #28a745;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
+            color: #a94442;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .alert::before {
+            font-size: 18px;
+        }
+        
+        .alert-success::before {
+            content: "✓";
+        }
+        
+        .alert-error::before {
+            content: "⚠";
+        }
+
+        /* Information sur le nombre de matières */
+        .info-matieres {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: space-between;
+        }
+
+        .info-matieres::before {
+            content: "📚";
+            font-size: 12px;
+        }
+
+        .info-count {
+            color: #0f1e33;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 20px;
+                height: auto;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .matiere-list {
+                max-height: 150px;
+            }
+        }
     </style>
 </head>
-
 <body>
-
-<div class="container">
-    <aside class="sidebar">
+    <div class="container">
+        <aside class="sidebar">
             <div class="logo-box">
                 <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-sidebar">
             </div>
@@ -210,161 +404,283 @@
             <p class="menu-title">GESTION</p>
             <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
             <a href="{% url 'groupes' %}">Gestion des groupes</a>
-            <a href="{% url 'salles' %}" class="active">Gestion des salles</a>
+            <a href="{% url 'salles' %}">Gestion des salles</a>
             <hr>
             <a href="{% url 'seances' %}">Gestion des séances</a>
             <hr>
 
-            <p class="menu-title">les séances réserver</p>
+            <p class="menu-title">Les séances réserver</p>
             <a href="{% url 'emploi_salle' %}">Par salle</a>
             <a href="{% url 'emploi_professeur' %}">Par professeur</a>
             <a href="{% url 'emploi_groupe' %}">Par groupe</a>
-            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>            
+            <a href="{% url 'emploi_today' %}">Pour aujourd'hui</a>
             <hr>
 
             <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
         </aside>
 
-<main class="content">
-    <h1>{{ titre }} un professeur</h1>
+        <main class="content">
+            <h1>{{ titre }} un professeur</h1>
 
-    <div class="form-container">
-        <form method="post" id="professeurForm">
-            {% csrf_token %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-            <!-- NOM -->
-            <div class="form-group">
-                <label>Nom *</label>
-                <input type="text" name="nom" id="id_nom" value="{{ form.nom.value|default:'' }}">
-                <div class="error-message" id="nom_error"></div>
+            <div class="form-container">
+                <form method="post" id="professeurForm">
+                    {% csrf_token %}
+
+                    <!-- NOM -->
+                    <div class="form-group">
+                        <label>Nom <span class="required">*</span></label>
+                        <input type="text" name="nom" id="id_nom" value="{{ form.nom.value|default:'' }}" placeholder="Saisir le nom">
+                        <div class="error-message" id="nom_error"></div>
+                    </div>
+
+                    <!-- PRENOM -->
+                    <div class="form-group">
+                        <label>Prénom <span class="required">*</span></label>
+                        <input type="text" name="prenom" id="id_prenom" value="{{ form.prenom.value|default:'' }}" placeholder="Saisir le prénom">
+                        <div class="error-message" id="prenom_error"></div>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" placeholder="exemple@email.com">
+                        <div class="error-message" id="email_error"></div>
+                    </div>
+
+                    <!-- TELEPHONE -->
+                    <div class="form-group">
+                        <label>Téléphone <span class="required">*</span></label>
+                        <input type="text" name="telephone" id="id_telephone" value="{{ form.telephone.value|default:'' }}" placeholder="+216 XX XXX XXX">
+                        <div class="error-message" id="telephone_error"></div>
+                    </div>
+
+                    <!-- MATIERE avec recherche et scrollbar -->
+                    <div class="form-group">
+                        <label>Matière <span class="required">*</span></label>
+                        
+                        <!-- Barre de recherche -->
+                        <div class="matiere-search">
+                            <input type="text" id="searchMatiere" placeholder="Rechercher une matière..." autocomplete="off">
+                        </div>
+                        
+                        <!-- Liste des matières avec scrollbar -->
+                        <div class="matiere-list" id="matiereList">
+                            {% for matiere in matieres %}
+                                <div class="matiere-option" data-id="{{ matiere.id }}" data-name="{{ matiere.nom|lower }}">
+                                    <span class="radio-custom"></span>
+                                    <span class="matiere-name">{{ matiere.nom }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <input type="hidden" name="matiere" id="id_matiere" value="{{ form.matiere.value|default:'' }}">
+                        <div class="error-message" id="matiere_error"></div>
+                        <div class="info-matieres">
+                            <span>{{ matieres|length }} matière(s) disponible(s)</span>
+                            <span class="info-count" id="visibleCount">{{ matieres|length }}</span>
+                            <span>affichée(s)</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{% url 'professeurs' %}" class="btn-cancel">Annuler</a>
+                        <button type="submit" class="btn-submit" id="submitBtn">Enregistrer</button>
+                    </div>
+                </form>
             </div>
-
-            <!-- PRENOM -->
-            <div class="form-group">
-                <label>Prénom *</label>
-                <input type="text" name="prenom" id="id_prenom" value="{{ form.prenom.value|default:'' }}">
-                <div class="error-message" id="prenom_error"></div>
-            </div>
-
-            <!-- EMAIL -->
-            <div class="form-group">
-                <label>Email *</label>
-                <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}">
-                <div class="error-message" id="email_error"></div>
-            </div>
-
-            <!-- TELEPHONE -->
-            <div class="form-group">
-                <label>Téléphone *</label>
-                <input type="text" name="telephone" id="id_telephone" value="{{ form.telephone.value|default:'' }}">
-                <div class="error-message" id="telephone_error"></div>
-            </div>
-
-            <!-- MATIERE -->
-            <div class="form-group">
-                <label>Matière *</label>
-                <select name="matiere" id="id_matiere">
-                    <option value="">Choisir une matière</option>
-                    {% for matiere in matieres %}
-                        <option value="{{ matiere.id }}"
-                            {% if form.matiere.value == matiere.id %}selected{% endif %}>
-                            {{ matiere.nom }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <div class="error-message" id="matiere_error"></div>
-            </div>
-
-            <div class="form-actions">
-                <a href="{% url 'professeurs' %}" class="btn-cancel">Annuler</a>
-                <button type="submit" class="btn-submit">Enregistrer</button>
-            </div>
-
-        </form>
+        </main>
     </div>
-</main>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const matiereOptions = document.querySelectorAll('.matiere-option');
+            const matiereHidden = document.getElementById('id_matiere');
+            const matiereList = document.getElementById('matiereList');
+            const searchInput = document.getElementById('searchMatiere');
+            let selectedMatiereId = "{{ form.matiere.value|default:'' }}";
+            
+            // Sélectionner la matière par défaut
+            if (selectedMatiereId) {
+                matiereOptions.forEach(option => {
+                    if (option.getAttribute('data-id') === selectedMatiereId) {
+                        option.classList.add('selected');
+                    }
+                });
+                matiereHidden.value = selectedMatiereId;
+            }
+            
+            // Gestion de la sélection d'une matière
+            matiereOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Désélectionner tous les autres
+                    matiereOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Sélectionner celui-ci
+                    this.classList.add('selected');
+                    // Mettre à jour le champ caché
+                    matiereHidden.value = this.getAttribute('data-id');
+                    // Effacer l'erreur
+                    clearError('matiere');
+                });
+            });
+            
+            // Fonction de recherche
+            function filterMatiere() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let visibleCount = 0;
+                
+                matiereOptions.forEach(option => {
+                    const name = option.getAttribute('data-name');
+                    if (name.includes(searchTerm) || searchTerm === '') {
+                        option.classList.remove('hidden-option');
+                        option.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        option.classList.add('hidden-option');
+                        option.style.display = 'none';
+                    }
+                });
+                
+                // Mettre à jour le compteur
+                const visibleCountSpan = document.getElementById('visibleCount');
+                if (visibleCountSpan) {
+                    visibleCountSpan.textContent = visibleCount;
+                }
+            }
+            
+            // Écouteur d'événement pour la recherche
+            if (searchInput) {
+                searchInput.addEventListener('input', filterMatiere);
+            }
+            
+            const inputs = {
+                nom: document.getElementById('id_nom'),
+                prenom: document.getElementById('id_prenom'),
+                email: document.getElementById('id_email'),
+                telephone: document.getElementById('id_telephone')
+            };
 
-    const inputs = {
-        nom: document.getElementById('id_nom'),
-        prenom: document.getElementById('id_prenom'),
-        email: document.getElementById('id_email'),
-        telephone: document.getElementById('id_telephone'),
-        matiere: document.getElementById('id_matiere')
-    };
+            const errors = {
+                nom: document.getElementById('nom_error'),
+                prenom: document.getElementById('prenom_error'),
+                email: document.getElementById('email_error'),
+                telephone: document.getElementById('telephone_error'),
+                matiere: document.getElementById('matiere_error')
+            };
 
-    const errors = {
-        nom: document.getElementById('nom_error'),
-        prenom: document.getElementById('prenom_error'),
-        email: document.getElementById('email_error'),
-        telephone: document.getElementById('telephone_error'),
-        matiere: document.getElementById('matiere_error')
-    };
+            const regex = {
+                alphabetic: /^[A-Za-zÀ-ÿ\s'-]+$/,
+                email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                phone: /^(?:\+216|00216|216)?[2-9][0-9]{7}$/
+            };
 
-    const regex = {
-        alphabetic: /^[A-Za-zÀ-ÿ\s'-]+$/,
-        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        phone: /^(?:\+216|00216|216)?[2-9][0-9]{7}$/
-    };
+            function showError(field, message) {
+                if (field === 'matiere') {
+                    matiereList.classList.add('error');
+                } else if (inputs[field]) {
+                    inputs[field].classList.add('error');
+                }
+                if (errors[field]) {
+                    errors[field].textContent = message;
+                    errors[field].classList.add('show');
+                }
+            }
 
-    function showError(field, message) {
-        inputs[field].classList.add('error');
-        errors[field].textContent = message;
-        errors[field].classList.add('show');
-    }
+            function clearError(field) {
+                if (field === 'matiere') {
+                    matiereList.classList.remove('error');
+                } else if (inputs[field]) {
+                    inputs[field].classList.remove('error');
+                }
+                if (errors[field]) {
+                    errors[field].classList.remove('show');
+                }
+            }
 
-    function clearError(field) {
-        inputs[field].classList.remove('error');
-        errors[field].classList.remove('show');
-    }
+            function validateField(field, value) {
+                clearError(field);
 
-    function validateField(field, value) {
+                if (field === 'matiere') {
+                    if (!value || value === '') {
+                        showError(field, "Champ obligatoire");
+                        return false;
+                    }
+                    return true;
+                }
 
-        clearError(field);
+                if (!value || value.trim() === '') {
+                    showError(field, "Champ obligatoire");
+                    return false;
+                }
 
-        if (!value.trim()) {
-            showError(field, "Champ obligatoire");
-            return false;
-        }
+                if ((field === 'nom' || field === 'prenom') && !regex.alphabetic.test(value)) {
+                    showError(field, "Seulement des lettres autorisées");
+                    return false;
+                }
 
-        if ((field === 'nom' || field === 'prenom') && !regex.alphabetic.test(value)) {
-            showError(field, "Seulement des lettres autorisées");
-            return false;
-        }
+                if (field === 'email' && !regex.email.test(value)) {
+                    showError(field, "Format email invalide");
+                    return false;
+                }
 
-        if (field === 'email' && !regex.email.test(value)) {
-            showError(field, "Email invalide");
-            return false;
-        }
+                if (field === 'telephone') {
+                    let phoneValue = value.replace(/[\s\-\.]/g, '');
+                    if (!regex.phone.test(phoneValue)) {
+                        showError(field, "Format téléphone tunisien invalide");
+                        return false;
+                    }
+                }
 
-        if (field === 'telephone' && !regex.phone.test(value)) {
-            showError(field, "Téléphone invalide");
-            return false;
-        }
+                return true;
+            }
 
-        if (field === 'matiere' && value === "") {
-            showError(field, "Sélection obligatoire");
-            return false;
-        }
+            // Validation en temps réel
+            Object.keys(inputs).forEach(field => {
+                inputs[field].addEventListener('input', function() {
+                    validateField(field, this.value);
+                });
 
-        return true;
-    }
+                inputs[field].addEventListener('blur', function() {
+                    validateField(field, this.value);
+                });
+            });
 
-    Object.keys(inputs).forEach(field => {
-        inputs[field].addEventListener('input', function() {
-            validateField(field, this.value);
+            // Validation du formulaire avant soumission
+            const form = document.getElementById('professeurForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Valider la matière
+                if (!validateField('matiere', matiereHidden.value)) {
+                    isValid = false;
+                }
+                
+                // Valider les autres champs
+                Object.keys(inputs).forEach(field => {
+                    if (!validateField(field, inputs[field].value)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    // Scroll vers le premier champ en erreur
+                    const firstError = document.querySelector('.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
         });
-
-        inputs[field].addEventListener('blur', function() {
-            validateField(field, this.value);
-        });
-    });
-
-});
-</script>
-
+    </script>
 </body>
 </html>

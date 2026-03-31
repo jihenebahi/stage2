@@ -4,41 +4,409 @@
     <meta charset="UTF-8">
     <title>Gestion des groupes</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/gestion-groupes.css' %}">
     <style>
-        /* Style juste pour les messages de succès */
+        /* GLOBAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* CONTAINER */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color: #0f1e33;
+            color: white;
+            padding: 25px 20px;
+        }
+
+        .logo-box {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .logo-sidebar {
+            width: 120px;
+        }
+
+        .admin-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .small-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .sidebar hr {
+            border: 1px solid white;
+            margin: 25px 0;
+        }
+
+        .menu-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 7px 0;
+            font-size: 14px;
+        }
+
+        .sidebar a.active {
+            text-decoration: underline;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            font-weight: bold;
+        }
+
+        /* CONTENU */
+        .content {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #0f1e33;
+        }
+
+        /* ALERTS */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         .alert-success {
             background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
             color: #0d6832;
+            border-left: 5px solid #28a745;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
+            color: #a94442;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .alert::before {
+            font-size: 18px;
+        }
+        
+        .alert-success::before {
+            content: "✓";
+        }
+        
+        .alert-error::before {
+            content: "⚠";
+        }
+
+        /* SEARCH BAR */
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: #0f1e33;
+            box-shadow: 0 0 0 2px rgba(15, 30, 51, 0.1);
+            outline: none;
+        }
+
+        /* BOUTON AJOUT */
+        .add-container {
+            margin-bottom: 20px;
+        }
+
+        a.add-btn {
+            background-color: #0f1e33;
+            color: white;
             padding: 12px 20px;
             border-radius: 8px;
-            border-left: 5px solid #28a745;
-            margin-bottom: 20px;
-            font-weight: 500;
-            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
         }
-        .sidebar a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    margin: 7px 0;
-    font-size: 14px;
-}
-.logo-box {
-    text-align: center;
-    margin-bottom: 5px;
-}
- .alert-error {
-    background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
-    color: #a94442;
-    padding: 12px 20px;
-    border-radius: 8px;
-    border-left: 5px solid #dc3545;
-    margin-bottom: 20px;
-    font-weight: 500;
-    box-shadow: 0 3px 10px rgba(220, 53, 69, 0.1);
-}
 
+        a.add-btn:hover {
+            background-color: #1c2b4a;
+        }
+
+        /* TABLEAU */
+        .table-container {
+            background-color: #f4f6f8;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        thead {
+            background-color: #0f1e33;
+            color: white;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        tbody tr {
+            background-color: #ffffff;
+            transition: all 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #eef2f7;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* BOUTONS ACTIONS */
+        a.btn {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 13px;
+            transition: background-color 0.3s;
+        }
+
+        a.edit { 
+            background-color: #0f1e33;
+        }
+
+        a.edit:hover { 
+            background-color: #1c2b4a;
+        }
+
+        a.delete { 
+            background-color: #6c757d;
+        }
+
+        a.delete:hover { 
+            background-color: #555;
+        }
+
+        /* PAGINATION */
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0f1e33;
+            transition: all 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #0f1e33;
+            color: white;
+            border-color: #0f1e33;
+        }
+
+        .pagination .current {
+            background-color: #0f1e33;
+            color: white;
+            border-color: #0f1e33;
+        }
+
+        /* MODAL DE CONFIRMATION */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 0;
+            border-radius: 10px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        }
+
+        .modal-header {
+            background-color: #0f1e33;
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+            color: #333;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-confirm {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-confirm:hover {
+            background-color: #c82333;
+        }
+
+        .btn-cancel-modal {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cancel-modal:hover {
+            background-color: #5a6268;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+
+        .close:hover {
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* INFO COUNT */
+        .info-count {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .table-container {
+                padding: 10px;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -65,11 +433,11 @@
             <a href="{% url 'seances' %}">Gestion des séances</a>
             <hr>
 
-            <p class="menu-title">les séances réserver</p>
+            <p class="menu-title">Les séances réserver</p>
             <a href="{% url 'emploi_salle' %}">Par salle</a>
             <a href="{% url 'emploi_professeur' %}">Par professeur</a>
             <a href="{% url 'emploi_groupe' %}">Par groupe</a>
-            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <a href="{% url 'emploi_today' %}">Pour aujourd'hui</a>
             <hr>
 
             <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
@@ -79,19 +447,21 @@
             <h1>Gestion des groupes</h1>
             
             {% if messages %}
-    {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            {% if message.tags == 'success' %}✓ {% endif %}
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
             <!-- Barre de recherche -->
             <div class="search-bar">
-                <form method="get">
-                    <input type="text" name="search" placeholder="Rechercher un groupe..." 
-                           value="{{ search }}">
+                <form method="get" id="searchForm">
+                    <input type="text" name="search" 
+                           placeholder="Rechercher par nom du groupe, professeur ou matière..." 
+                           value="{{ search }}"
+                           id="searchInput"
+                           autocomplete="off">
                 </form>
             </div>
 
@@ -105,14 +475,14 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Nom</th>
+                            <th>Nom du groupe</th>
                             <th>Professeur</th>
                             <th>Matière</th>
                             <th>Nombre d'élèves</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="groupesTableBody">
                         {% for groupe in groupes %}
                         <tr>
                             <td>{{ groupe.nom }}</td>
@@ -121,18 +491,15 @@
                             <td>{{ groupe.nombre_etudiants }}</td>
                             <td>
                                 <a href="{% url 'modifier_groupe' groupe.id %}" class="btn edit">Modifier</a>
-                                <a href="{% url 'supprimer_groupe' groupe.id %}" class="btn delete"
-                                   onclick="return confirm('Supprimer ce groupe ?')">
-                                   Supprimer
-                                </a>
+                                <a href="#" class="btn delete" data-id="{{ groupe.id }}" data-nom="{{ groupe.nom }}">Supprimer</a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" style="text-align: center; padding: 30px; color: #666;">
+                            <td colspan="5" style="text-align: center; padding: 40px; color: #666;">
                                 Aucun groupe trouvé.
                                 <br>
-                                <a href="{% url 'ajouter_groupe' %}" style="color: #0f1e33; text-decoration: underline;">
+                                <a href="{% url 'ajouter_groupe' %}" style="color: #0f1e33; margin-top: 10px; display: inline-block;">
                                     Ajouter un premier groupe
                                 </a>
                             </td>
@@ -141,7 +508,188 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            {% if groupes.paginator.num_pages > 1 %}
+            <div class="pagination">
+                {% if groupes.has_previous %}
+                    <a href="?page=1{% if search %}&search={{ search }}{% endif %}">&laquo; Première</a>
+                    <a href="?page={{ groupes.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">Précédente</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ groupes.number }} sur {{ groupes.paginator.num_pages }}
+                </span>
+
+                {% if groupes.has_next %}
+                    <a href="?page={{ groupes.next_page_number }}{% if search %}&search={{ search }}{% endif %}">Suivante</a>
+                    <a href="?page={{ groupes.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}">Dernière &raquo;</a>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Information sur le nombre de résultats -->
+            <div class="info-count">
+                {{ total_count }} groupe{{ total_count|pluralize:"s" }} trouvé{{ total_count|pluralize:"s" }}
+            </div>
         </main>
     </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Confirmation de suppression</h2>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer le groupe <strong id="groupeName"></strong> ?</p>
+                <p style="color: #dc3545; margin-top: 10px;">Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel-modal" id="cancelDelete">Annuler</button>
+                <button class="btn-confirm" id="confirmDelete">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recherche en temps réel
+            const searchInput = document.getElementById('searchInput');
+            const searchForm = document.getElementById('searchForm');
+            let searchTimeout;
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(function() {
+                        searchForm.submit();
+                    }, 500);
+                });
+                
+                searchInput.addEventListener('focus', function() {
+                    this.style.borderColor = '#0f1e33';
+                    this.style.boxShadow = '0 0 0 2px rgba(15, 30, 51, 0.1)';
+                });
+                
+                searchInput.addEventListener('blur', function() {
+                    this.style.borderColor = '#ccc';
+                    this.style.boxShadow = 'none';
+                });
+            }
+            
+            // Modal de confirmation de suppression
+            const modal = document.getElementById('deleteModal');
+            const closeModal = document.querySelector('.close');
+            const cancelDelete = document.getElementById('cancelDelete');
+            const confirmDelete = document.getElementById('confirmDelete');
+            let groupeIdToDelete = null;
+            
+            // Ouvrir le modal lors du clic sur un bouton supprimer
+            const deleteButtons = document.querySelectorAll('.delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    groupeIdToDelete = this.getAttribute('data-id');
+                    const groupeNom = this.getAttribute('data-nom');
+                    document.getElementById('groupeName').textContent = groupeNom;
+                    modal.style.display = 'block';
+                });
+            });
+            
+            // Fermer le modal
+            function closeModalFunction() {
+                modal.style.display = 'none';
+                groupeIdToDelete = null;
+            }
+            
+            closeModal.addEventListener('click', closeModalFunction);
+            cancelDelete.addEventListener('click', closeModalFunction);
+            
+            // Fermer en cliquant en dehors
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModalFunction();
+                }
+            });
+            
+            // Confirmer la suppression
+            confirmDelete.addEventListener('click', function() {
+                if (groupeIdToDelete) {
+                    fetch(`/groupes/supprimer/${groupeIdToDelete}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            showErrorMessage(data.error);
+                            closeModalFunction();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        showErrorMessage('Une erreur est survenue lors de la suppression');
+                        closeModalFunction();
+                    });
+                }
+            });
+            
+            // Fonction pour afficher un message d'erreur stylisé
+            function showErrorMessage(message) {
+                let messageContainer = document.querySelector('.content');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-error';
+                errorDiv.innerHTML = message;
+                
+                const h1 = document.querySelector('h1');
+                h1.insertAdjacentElement('afterend', errorDiv);
+                
+                setTimeout(() => {
+                    errorDiv.style.opacity = '0';
+                    errorDiv.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        errorDiv.remove();
+                    }, 500);
+                }, 5000);
+            }
+            
+            // Fonction pour obtenir le cookie CSRF
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            // Animation des lignes du tableau
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-1px)';
+                    this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'none';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

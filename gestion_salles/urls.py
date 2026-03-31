@@ -12,6 +12,7 @@ urlpatterns = [
 
     path('', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
    path('logout/', views.logout_view, name='logout'), 
+   path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     
     # Dashboard et gestion
     path('dashbord/', views.dashboard, name='dashboard'),
@@ -22,6 +23,7 @@ urlpatterns = [
     path('professeurs/ajouter/', views.ajouter_professeur, name='ajouter_professeur'),
     path('professeurs/modifier/<int:id>/', views.modifier_professeur, name='modifier_professeur'),
     path('professeurs/supprimer/<int:id>/', views.supprimer_professeur, name='supprimer_professeur'),
+    
 
         path('professeurs/<int:professeur_id>/matieres/', views.get_matieres_professeur, name='professeur_matieres'),
     
@@ -42,12 +44,13 @@ urlpatterns = [
     path('seances/ajouter/', views.ajouter_seance, name='ajouter_seance'),
     path('seances/modifier/<int:id>/', views.modifier_seance, name='modifier_seance'),
     path('seances/supprimer/<int:id>/', views.supprimer_seance, name='supprimer_seance'),
+      path('seances/supprimer-multiple/', views.supprimer_seances_multiple, name='supprimer_seances_multiple'),
     
     # Emplois du temps
     path('emplois/salle/', views.emploi_par_salle, name='emploi_salle'),
     path('emplois/professeur/', views.emploi_par_professeur, name='emploi_professeur'),
     path('emplois/groupe/', views.emploi_par_groupe, name='emploi_groupe'),
-    path('emplois/export-pdf/', views.generer_pdf, name='export_pdf'),
+    path('generer-pdf/', views.generer_pdf, name='generer_pdf'),
 
     # Emploi d'aujourd'hui
     path('emplois/today/', views.emploi_today, name='emploi_today'),

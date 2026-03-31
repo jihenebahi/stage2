@@ -4,24 +4,7 @@
     <meta charset="UTF-8">
     <title>Gestion des professeurs</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/gestion-professeurs.css' %}">
     <style>
-        .alert {
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
         /* GLOBAL */
         * {
             margin: 0;
@@ -111,6 +94,62 @@
             color: #0f1e33;
         }
 
+        /* ALERTS */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+            color: #0d6832;
+            border-left: 5px solid #28a745;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
+            color: #a94442;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1, #e7f3f5);
+            color: #0c5460;
+            border-left: 5px solid #17a2b8;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd, #fef7e0);
+            color: #856404;
+            border-left: 5px solid #ffc107;
+        }
+        
+        .alert::before {
+            font-size: 18px;
+        }
+        
+        .alert-success::before {
+            content: "✓";
+        }
+        
+        .alert-error::before {
+            content: "⚠";
+        }
+        
+        .alert-info::before {
+            content: "ℹ";
+        }
+        
+        .alert-warning::before {
+            content: "!";
+        }
+
         /* SEARCH BAR */
         .search-bar {
             margin-bottom: 20px;
@@ -122,6 +161,13 @@
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: #0f1e33;
+            box-shadow: 0 0 0 2px rgba(15, 30, 51, 0.1);
+            outline: none;
         }
 
         /* BOUTON AJOUT */
@@ -129,7 +175,6 @@
             margin-bottom: 20px;
         }
 
-        /* BOUTONS AVEC <a> */
         a.add-btn {
             background-color: #0f1e33;
             color: white;
@@ -177,14 +222,16 @@
 
         tbody tr {
             background-color: #ffffff;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
         }
 
         tbody tr:hover {
             background-color: #eef2f7;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* BOUTONS ACTIONS DANS TABLEAU */
+        /* BOUTONS ACTIONS */
         a.btn {
             display: inline-block;
             padding: 6px 12px;
@@ -213,7 +260,7 @@
             background-color: #555;
         }
 
-        /* Style pour la matière */
+        /* MATIERE BADGE */
         .matiere-badge {
             background: #0f1e33;
             color: white;
@@ -230,22 +277,150 @@
             font-size: 13px;
         }
 
-        /* Message vide */
-        .empty-message {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-size: 16px;
+        /* PAGINATION */
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .empty-message a {
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
             color: #0f1e33;
-            text-decoration: underline;
-            margin-top: 10px;
-            display: inline-block;
+            transition: all 0.3s;
         }
 
-        /* Responsive */
+        .pagination a:hover {
+            background-color: #0f1e33;
+            color: white;
+            border-color: #0f1e33;
+        }
+
+        .pagination .current {
+            background-color: #0f1e33;
+            color: white;
+            border-color: #0f1e33;
+        }
+
+        /* MODAL DE CONFIRMATION */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 0;
+            border-radius: 10px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        }
+
+        .modal-header {
+            background-color: #0f1e33;
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+            color: #333;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-confirm {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-confirm:hover {
+            background-color: #c82333;
+        }
+
+        .btn-cancel-modal {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cancel-modal:hover {
+            background-color: #5a6268;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+
+        .close:hover {
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* INFO COUNT */
+        .info-count {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 1200px) {
             .container {
                 flex-direction: column;
@@ -270,28 +445,6 @@
                 min-width: 600px;
             }
         }
-
-            .alert-success {
-        background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
-        color: #0d6832;
-        padding: 12px 20px;
-        border-radius: 8px;
-        border-left: 5px solid #28a745;
-        margin-bottom: 20px;
-        font-weight: 500;
-        box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
-    }
-    .alert-error {
-    background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
-    color: #a94442;
-    padding: 12px 20px;
-    border-radius: 8px;
-    border-left: 5px solid #dc3545;
-    margin-bottom: 20px;
-    font-weight: 500;
-    box-shadow: 0 3px 10px rgba(220, 53, 69, 0.1);
-}
-
     </style>
 </head>
 <body>
@@ -318,11 +471,11 @@
             <a href="{% url 'seances' %}">Gestion des séances</a>
             <hr>
 
-            <p class="menu-title">les séances réserver</p>
+            <p class="menu-title">Les séances réserver</p>
             <a href="{% url 'emploi_salle' %}">Par salle</a>
             <a href="{% url 'emploi_professeur' %}">Par professeur</a>
             <a href="{% url 'emploi_groupe' %}">Par groupe</a>
-            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <a href="{% url 'emploi_today' %}">Pour aujourd'hui</a>
             <hr>
 
             <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
@@ -330,27 +483,23 @@
 
         <main class="content">
             <h1>Gestion des professeurs</h1>
-            
 
-
-    {% if messages %}
-    {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            {% if message.tags == 'success' %}✓ {% endif %}
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
-
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
             <!-- Barre de recherche -->
             <div class="search-bar">
-                <form method="get">
+                <form method="get" id="searchForm">
                     <input type="text" name="search" 
                            placeholder="Rechercher par nom, prénom ou matière..." 
                            value="{{ search }}"
-                           aria-label="Rechercher un professeur">
-                    <button type="submit" style="display: none;">Rechercher</button>
+                           id="searchInput"
+                           autocomplete="off">
                 </form>
             </div>
 
@@ -364,7 +513,6 @@
                 <table>
                     <thead>
                         <tr>
-                            
                             <th>Nom & Prénom</th>
                             <th>Matière</th>
                             <th>Email</th>
@@ -372,10 +520,9 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="professeursTableBody">
                         {% for prof in professeurs %}
                         <tr>
-                            
                             <td>{{ prof.nom_complet }}</td>
                             <td>
                                 {% if prof.matiere %}
@@ -388,18 +535,15 @@
                             <td>{{ prof.telephone }}</td>
                             <td>
                                 <a href="{% url 'modifier_professeur' prof.id %}" class="btn edit">Modifier</a>
-                                <a href="{% url 'supprimer_professeur' prof.id %}" class="btn delete"
-                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce professeur ?')">
-                                   Supprimer
-                                </a>
+                                <a href="#" class="btn delete" data-id="{{ prof.id }}" data-nom="{{ prof.nom_complet }}">Supprimer</a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="empty-message">
+                            <td colspan="5" class="empty-message" style="text-align: center; padding: 40px; color: #666;">
                                 Aucun professeur trouvé.
                                 <br>
-                                <a href="{% url 'ajouter_professeur' %}">
+                                <a href="{% url 'ajouter_professeur' %}" style="color: #0f1e33; margin-top: 10px; display: inline-block;">
                                     Ajouter un premier professeur
                                 </a>
                             </td>
@@ -409,21 +553,65 @@
                 </table>
             </div>
             
-            <!-- Information sur le nombre de résultats -->
-            {% if professeurs %}
-            <div style="margin-top: 15px; color: #666; font-size: 14px; text-align: center;">
-                {{ professeurs.count }} professeur{{ professeurs.count|pluralize:"s" }} trouvé{{ professeurs.count|pluralize:"s" }}
+            <!-- Pagination -->
+            {% if professeurs.paginator.num_pages > 1 %}
+            <div class="pagination">
+                {% if professeurs.has_previous %}
+                    <a href="?page=1{% if search %}&search={{ search }}{% endif %}">&laquo; Première</a>
+                    <a href="?page={{ professeurs.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">Précédente</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ professeurs.number }} sur {{ professeurs.paginator.num_pages }}
+                </span>
+
+                {% if professeurs.has_next %}
+                    <a href="?page={{ professeurs.next_page_number }}{% if search %}&search={{ search }}{% endif %}">Suivante</a>
+                    <a href="?page={{ professeurs.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}">Dernière &raquo;</a>
+                {% endif %}
             </div>
             {% endif %}
+            
+            <!-- Information sur le nombre de résultats -->
+            <div class="info-count">
+                {{ total_count }} professeur{{ total_count|pluralize:"s" }} trouvé{{ total_count|pluralize:"s" }}
+            </div>
         </main>
     </div>
-    
+
+    <!-- Modal de confirmation de suppression -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Confirmation de suppression</h2>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer le professeur <strong id="professeurName"></strong> ?</p>
+                <p style="color: #dc3545; margin-top: 10px;">Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel-modal" id="cancelDelete">Annuler</button>
+                <button class="btn-confirm" id="confirmDelete">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Script pour améliorer l'expérience utilisateur
         document.addEventListener('DOMContentLoaded', function() {
-            // Ajouter un effet de focus sur la barre de recherche
-            const searchInput = document.querySelector('input[name="search"]');
+            // Recherche en temps réel
+            const searchInput = document.getElementById('searchInput');
+            const searchForm = document.getElementById('searchForm');
+            let searchTimeout;
+            
             if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(function() {
+                        searchForm.submit();
+                    }, 500);
+                });
+                
                 searchInput.addEventListener('focus', function() {
                     this.style.borderColor = '#0f1e33';
                     this.style.boxShadow = '0 0 0 2px rgba(15, 30, 51, 0.1)';
@@ -433,25 +621,117 @@
                     this.style.borderColor = '#ccc';
                     this.style.boxShadow = 'none';
                 });
-                
-                // Focus automatique sur la barre de recherche si elle a une valeur
-                if (searchInput.value) {
-                    searchInput.focus();
-                    searchInput.selectionStart = searchInput.selectionEnd = searchInput.value.length;
-                }
             }
             
-            // Confirmation avant suppression
-            const deleteButtons = document.querySelectorAll('a.delete');
+            // Modal de confirmation de suppression
+            const modal = document.getElementById('deleteModal');
+            const closeModal = document.querySelector('.close');
+            const cancelDelete = document.getElementById('cancelDelete');
+            const confirmDelete = document.getElementById('confirmDelete');
+            let professeurIdToDelete = null;
+            
+            // Ouvrir le modal lors du clic sur un bouton supprimer
+            const deleteButtons = document.querySelectorAll('.delete');
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
-                    if (!confirm('Êtes-vous sûr de vouloir supprimer ce professeur ?')) {
-                        e.preventDefault();
-                    }
+                    e.preventDefault();
+                    professeurIdToDelete = this.getAttribute('data-id');
+                    const professeurNom = this.getAttribute('data-nom');
+                    document.getElementById('professeurName').textContent = professeurNom;
+                    modal.style.display = 'block';
                 });
             });
             
-            // Mettre en évidence les lignes au survol
+            // Fermer le modal
+            function closeModalFunction() {
+                modal.style.display = 'none';
+                professeurIdToDelete = null;
+            }
+            
+            closeModal.addEventListener('click', closeModalFunction);
+            cancelDelete.addEventListener('click', closeModalFunction);
+            
+            // Fermer en cliquant en dehors
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModalFunction();
+                }
+            });
+            
+            // Confirmer la suppression
+            confirmDelete.addEventListener('click', function() {
+                if (professeurIdToDelete) {
+                    // Effectuer la requête AJAX
+                    fetch(`/professeurs/supprimer/${professeurIdToDelete}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Recharger la page ou supprimer la ligne
+                            window.location.reload();
+                        } else {
+                            // Afficher l'erreur dans un message d'alerte stylisé
+                            showErrorMessage(data.error);
+                            closeModalFunction();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        showErrorMessage('Une erreur est survenue lors de la suppression');
+                        closeModalFunction();
+                    });
+                }
+            });
+            
+            // Fonction pour afficher un message d'erreur stylisé
+            function showErrorMessage(message) {
+                // Créer un conteneur pour les messages s'il n'existe pas
+                let messageContainer = document.querySelector('.messages-container');
+                if (!messageContainer) {
+                    messageContainer = document.createElement('div');
+                    messageContainer.className = 'messages-container';
+                    const h1 = document.querySelector('h1');
+                    h1.parentNode.insertBefore(messageContainer, h1.nextSibling);
+                }
+                
+                // Créer le message d'erreur
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-error';
+                errorDiv.innerHTML = message;
+                messageContainer.appendChild(errorDiv);
+                
+                // Faire disparaître le message après 5 secondes
+                setTimeout(() => {
+                    errorDiv.style.opacity = '0';
+                    errorDiv.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        errorDiv.remove();
+                    }, 500);
+                }, 5000);
+            }
+            
+            // Fonction pour obtenir le cookie CSRF
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            // Animation des lignes du tableau
             const tableRows = document.querySelectorAll('tbody tr');
             tableRows.forEach(row => {
                 row.addEventListener('mouseenter', function() {

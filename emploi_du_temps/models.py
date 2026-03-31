@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models import Q
 class Matiere(models.Model):
     nom = models.CharField(max_length=100, unique=True)
     
@@ -70,43 +71,56 @@ class Seance(models.Model):
             timezone.datetime.combine(self.date, self.heure_fin)
         ) < now
 
-    def valider_seance(self):
-        from django.db.models import Q
+    def valider_seance(self, exclude_id=None):
+        """Vérifie les conflits pour cette séance"""
         conflits = []
 
+        # Vérifier la salle
         conflits_salle = Seance.objects.filter(
             salle=self.salle,
             date=self.date
-        ).exclude(pk=self.pk).filter(
+        )
+        if exclude_id:
+            conflits_salle = conflits_salle.exclude(id=exclude_id)
+        conflits_salle = conflits_salle.filter(
             Q(heure_debut__lt=self.heure_fin, heure_fin__gt=self.heure_debut)
         )
 
         if conflits_salle.exists():
-            conflits.append("Salle déjà occupée à cette date et heure")
+            conflits.append(f"❌ Salle {self.salle.nom} déjà occupée à cette date et heure")
 
+        # Vérifier le professeur
         conflits_prof = Seance.objects.filter(
             groupe__professeur=self.groupe.professeur,
             date=self.date
-        ).exclude(pk=self.pk).filter(
+        )
+        if exclude_id:
+            conflits_prof = conflits_prof.exclude(id=exclude_id)
+        conflits_prof = conflits_prof.filter(
             Q(heure_debut__lt=self.heure_fin, heure_fin__gt=self.heure_debut)
         )
 
         if conflits_prof.exists():
-            conflits.append("Professeur indisponible à cette date et heure")
+            conflits.append(f"❌ Professeur {self.groupe.professeur.nom_complet} indisponible à cette date et heure")
 
+        # Vérifier le groupe
         conflits_groupe = Seance.objects.filter(
             groupe=self.groupe,
             date=self.date
-        ).exclude(pk=self.pk).filter(
+        )
+        if exclude_id:
+            conflits_groupe = conflits_groupe.exclude(id=exclude_id)
+        conflits_groupe = conflits_groupe.filter(
             Q(heure_debut__lt=self.heure_fin, heure_fin__gt=self.heure_debut)
         )
 
         if conflits_groupe.exists():
-            conflits.append("Groupe déjà programmé à cette date et heure")
+            conflits.append(f"❌ Groupe {self.groupe.nom} déjà programmé à cette date et heure")
 
+        # Vérifier la capacité de la salle
         if self.groupe.nombre_etudiants > self.salle.capacite:
             conflits.append(
-                f"Capacité insuffisante (groupe: {self.groupe.nombre_etudiants}, salle: {self.salle.capacite})"
+                f"❌ Capacité insuffisante (groupe: {self.groupe.nombre_etudiants} élèves, salle: {self.salle.capacite} places)"
             )
 
         return conflits

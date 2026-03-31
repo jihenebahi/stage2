@@ -4,263 +4,105 @@
     <meta charset="UTF-8">
     <title>{{ titre }} groupe</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/gestion-groupes.css' %}">
     <style>
-        /* GLOBAL */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-/* CONTAINER */
-.container {
-    display: flex;
-    height: 100vh;
-}
+        body {
+            background: #f5f6fa;
+            overflow: hidden; /* Supprime la scrollbar de la page */
+        }
 
-/* SIDEBAR */
-.sidebar {
-    width: 270px;
-    background-color: #0f1e33;
-    color: white;
-    padding: 25px 20px;
-}
+        .container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden; /* Empêche le débordement */
+        }
 
-.logo-box {
-    text-align: center;
-    margin-bottom: 5px;
-}
+        /* SIDEBAR */
+        .sidebar {
+            width: 270px;
+            background-color: #0f1e33;
+            color: white;
+            padding: 25px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto; /* Garde la scrollbar dans la sidebar si nécessaire */
+        }
 
-.logo-sidebar {
-    width: 120px;
-}
+        .logo-box {
+            text-align: center;
+            margin-bottom: 5px;
+        }
 
-.admin-line {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
+        .logo-sidebar {
+            width: 120px;
+        }
 
-.small-avatar {
-    width: 35px;
-    height: 35px;
-    background-color: white;
-    border-radius: 50%;
-}
+        .admin-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-.sidebar hr {
-    border: 1px solid white;
-    margin: 25px 0;
-}
+        .small-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+        }
 
-.menu-title {
-    font-weight: bold;
-    margin-bottom: 15px;
-    font-size: 14px;
-}
+        .sidebar hr {
+            border: 1px solid white;
+            margin: 25px 0;
+        }
 
-.sidebar a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    margin: 7px 0;
-    font-size: 14px;
-}
+        .menu-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
 
-.sidebar a.active {
-    text-decoration: underline;
-}
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 7px 0;
+            font-size: 14px;
+        }
 
-.sidebar a:hover {
-    text-decoration: underline;
-}
+        .sidebar a.active {
+            text-decoration: underline;
+        }
 
-.logout {
-    font-weight: bold;
-}
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
 
-/* CONTENU */
-.content {
-    flex: 1;
-    background-color: #ffffff;
-    padding: 40px;
-    overflow-y: auto;
-}
+        .logout {
+            font-weight: bold;
+        }
 
-h1 {
-    margin-bottom: 30px;
-    color: #0f1e33;
-}
+        /* CONTENU PRINCIPAL */
+        .content {
+            flex: 1;
+            margin-left: 270px;
+            padding: 40px;
+            background: white;
+            overflow-y: auto; /* Permet le défilement du contenu principal */
+            height: 100vh;
+        }
 
-/* SEARCH BAR */
-.search-bar {
-    margin-bottom: 20px;
-}
+        h1 {
+            margin-bottom: 30px;
+            color: #0f1e33;
+        }
 
-.search-bar input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-/* BOUTON AJOUT */
-.add-container {
-    margin-bottom: 20px;
-}
-
-/* BOUTONS AVEC <a> */
-a.add-btn {
-    background-color: #0f1e33; /* bleu Cyberbar */
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    text-decoration: none;
-    display: inline-block;
-}
-
-a.add-btn:hover {
-    background-color: #1c2b4a;
-}
-
-/* TABLEAU */
-.table-container {
-    background-color: #f4f6f8;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-thead {
-    background-color: #0f1e33;
-    color: white;
-}
-
-th, td {
-    padding: 14px;
-    text-align: left;
-}
-
-tbody tr {
-    background-color: #ffffff;
-    border-bottom: 1px solid #ddd;
-}
-
-tbody tr:hover {
-    background-color: #eef2f7;
-}
-
-/* BOUTONS ACTIONS DANS TABLEAU */
-a.btn {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 5px;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-a.edit { 
-    background-color: #0f1e33; /* bleu Cyberbar */
-}
-
-a.edit:hover { 
-    background-color: #1c2b4a;
-}
-
-a.delete { 
-    background-color: #6c757d;
-}
-
-a.delete:hover { 
-    background-color: #555;
-}
-
-/* MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-    background-color: white;
-    margin: 80px auto;
-    padding: 30px;
-    border-radius: 10px;
-    width: 400px;
-    color: #0f1e33;
-    box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
-}
-
-.modal-content h2 {
-    margin-bottom: 20px;
-    color: #0f1e33; /* titre bleu Cyberbar */
-    text-align: center;
-}
-
-.modal-content label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
-}
-
-.modal-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #0f1e33; /* bouton bleu Cyberbar */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.modal-btn:hover {
-    background-color: #1c2b4a; /* hover plus foncé */
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover { 
-    color: #0f1e33; 
-}
-.modal-content select {
-    width: 100%;          /* même largeur que les inputs */
-    padding: 8px;         /* même padding que les inputs */
-    border-radius: 5px;   /* coins arrondis comme les inputs */
-    border: 1px solid #ccc; /* même bordure */
-    margin-bottom: 15px;  /* même marge que les inputs */
-    font-family: Arial, sans-serif; /* même police */
-    font-size: 14px;      /* taille de texte similaire */
-}
         .form-container {
             max-width: 600px;
             margin: 0 auto;
@@ -269,36 +111,164 @@ a.delete:hover {
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #0f1e33;
         }
-        .form-group input, .form-group select {
+
+        .form-group label .required {
+            color: #dc3545;
+        }
+
+        .form-group input,
+        .form-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        /* Style pour la recherche de professeurs */
+        .professeur-search {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .professeur-search input {
+            width: 100%;
+            padding: 10px 12px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
+            padding-left: 35px;
         }
+
+        .professeur-search::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #999;
+            pointer-events: none;
+        }
+
+        .professeur-search input:focus {
+            border-color: #0f1e33;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(15, 30, 51, 0.1);
+        }
+
+        /* STYLE POUR LA LISTE DES PROFESSEURS - 4 éléments visibles + scrollbar */
+        .professeur-list {
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: 160px; /* Hauteur pour 4 éléments */
+        }
+
+        .professeur-option {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .professeur-option:hover {
+            background-color: #eef2f7;
+        }
+
+        .professeur-option.selected {
+            background-color: #0f1e33;
+            color: white;
+        }
+
+        .professeur-option.selected .radio-custom {
+            border-color: white;
+        }
+
+        .radio-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #0f1e33;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+        }
+
+        .professeur-option.selected .radio-custom::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .professeur-name {
+            flex: 1;
+        }
+
+        .hidden-option {
+            display: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #0f1e33;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(15, 30, 51, 0.1);
+        }
+
+        /* ERREUR */
+        .form-group input.error,
+        .form-group select.error,
+        .professeur-list.error {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .error-message::before {
+            content: "⚠";
+            font-size: 12px;
+        }
+
         .form-actions {
             display: flex;
             gap: 15px;
             margin-top: 30px;
         }
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-            flex: 1;
-        }
+
         .btn-submit {
             background: #0f1e33;
             color: white;
@@ -308,6 +278,104 @@ a.delete:hover {
             cursor: pointer;
             font-weight: bold;
             flex: 1;
+            transition: opacity 0.3s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+            transition: opacity 0.3s;
+        }
+
+        .btn-cancel:hover {
+            opacity: 0.9;
+        }
+
+        /* ALERTES */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4ffd4, #e7f7ef);
+            color: #0d6832;
+            border-left: 5px solid #28a745;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #ffd6d6, #f7e7e7);
+            color: #a94442;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .alert::before {
+            font-size: 18px;
+        }
+        
+        .alert-success::before {
+            content: "✓";
+        }
+        
+        .alert-error::before {
+            content: "⚠";
+        }
+
+        /* Information sur le nombre de professeurs */
+        .info-professeurs {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: space-between;
+        }
+
+        .info-professeurs::before {
+            content: "📋";
+            font-size: 12px;
+        }
+
+        .info-count {
+            color: #0f1e33;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 20px;
+                height: auto;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .professeur-list {
+                max-height: 150px;
+            }
         }
     </style>
 </head>
@@ -329,17 +397,17 @@ a.delete:hover {
 
             <p class="menu-title">GESTION</p>
             <a href="{% url 'professeurs' %}">Gestion des professeurs</a>
-            <a href="{% url 'groupes' %}">Gestion des groupes</a>
+            <a href="{% url 'groupes' %}" class="active">Gestion des groupes</a>
             <a href="{% url 'salles' %}">Gestion des salles</a>
             <hr>
             <a href="{% url 'seances' %}">Gestion des séances</a>
             <hr>
 
-            <p class="menu-title">les séances réserver</p>
+            <p class="menu-title">Les séances réserver</p>
             <a href="{% url 'emploi_salle' %}">Par salle</a>
             <a href="{% url 'emploi_professeur' %}">Par professeur</a>
             <a href="{% url 'emploi_groupe' %}">Par groupe</a>
-            <a href="{% url 'emploi_today' %}">Pour d'aujourd'hui</a>
+            <a href="{% url 'emploi_today' %}">Pour aujourd'hui</a>
             <hr>
 
             <a href="{% url 'logout' %}" class="logout">Déconnexion</a>
@@ -347,37 +415,69 @@ a.delete:hover {
 
         <main class="content">
             <h1>{{ titre }} un groupe</h1>
-            
+
             {% if messages %}
-            <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 5px; margin-bottom: 20px;">
                 {% for message in messages %}
-                <div>{{ message }}</div>
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
                 {% endfor %}
-            </div>
             {% endif %}
-            
+
             <div class="form-container">
-                <form method="post" id="groupe-form">
+                <form method="post" id="groupeForm">
                     {% csrf_token %}
                     
                     <div class="form-group">
-                        <label for="{{ form.nom.id_for_label }}">Nom du groupe</label>
-                        {{ form.nom }}
+                        <label for="id_nom">Nom du groupe <span class="required">*</span></label>
+                        <input type="text" name="nom" id="id_nom" value="{{ form.nom.value|default:'' }}" placeholder="Saisir le nom du groupe">
+                        <div class="error-message" id="nom_error"></div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.professeur.id_for_label }}">Professeur</label>
-                        {{ form.professeur }}
+                        <label>Professeur <span class="required">*</span></label>
+                        
+                        <!-- Barre de recherche -->
+                        <div class="professeur-search">
+                            <input type="text" id="searchProfesseur" placeholder="Rechercher un professeur..." autocomplete="off">
+                        </div>
+                        
+                        <!-- Liste des professeurs avec scrollbar -->
+                        <div class="professeur-list" id="professeurList">
+                            {% for prof in form.fields.professeur.queryset %}
+                                <div class="professeur-option" data-id="{{ prof.id }}" data-name="{{ prof.nom_complet|lower }}">
+                                    <span class="radio-custom"></span>
+                                    <span class="professeur-name">{{ prof.nom_complet }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <input type="hidden" name="professeur" id="id_professeur" value="{{ form.professeur.value|default:'' }}">
+                        <div class="error-message" id="professeur_error"></div>
+                        <div class="info-professeurs">
+                            <span>{{ form.fields.professeur.queryset|length }} professeur(s) disponible(s)</span>
+                            <span class="info-count" id="visibleCount">{{ form.fields.professeur.queryset|length }}</span>
+                            <span>affiché(s)</span>
+                        </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.matiere.id_for_label }}">Matière</label>
-                        {{ form.matiere }}
+                        <label for="id_matiere">Matière <span class="required">*</span></label>
+                        <select name="matiere" id="id_matiere">
+                            <option value="">Choisir une matière</option>
+                            {% for matiere in form.fields.matiere.queryset %}
+                                <option value="{{ matiere.id }}" {% if form.matiere.value == matiere.id %}selected{% endif %}>
+                                    {{ matiere.nom }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="error-message" id="matiere_error"></div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.nombre_etudiants.id_for_label }}">Nombre d'élèves</label>
-                        {{ form.nombre_etudiants }}
+                        <label for="id_nombre_etudiants">Nombre d'élèves <span class="required">*</span></label>
+                        <input type="number" name="nombre_etudiants" id="id_nombre_etudiants" value="{{ form.nombre_etudiants.value|default:'' }}" min="1" max="500" placeholder="Saisir le nombre d'élèves">
+                        <div class="error-message" id="nombre_etudiants_error"></div>
                     </div>
                     
                     <div class="form-actions">
@@ -388,57 +488,226 @@ a.delete:hover {
             </div>
         </main>
     </div>
-    
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const professeurSelect = document.getElementById('id_professeur');
-        const matiereSelect = document.getElementById('id_matiere');
-        
-        function updateMatieres() {
-            const professeurId = professeurSelect.value;
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const professeurOptions = document.querySelectorAll('.professeur-option');
+            const professeurHidden = document.getElementById('id_professeur');
+            const professeurList = document.getElementById('professeurList');
+            const searchInput = document.getElementById('searchProfesseur');
+            let selectedProfesseurId = "{{ form.professeur.value|default:'' }}";
             
-            if (professeurId) {
-                fetch(`/professeurs/${professeurId}/matieres/`)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Erreur réseau');
-                        return response.json();
-                    })
-                    .then(data => {
-                        matiereSelect.innerHTML = '<option value="">---------</option>';
-                        
-                        if (data.length > 0) {
-                            data.forEach(matiere => {
-                                const option = document.createElement('option');
-                                option.value = matiere.id;
-                                option.textContent = matiere.nom;
-                                matiereSelect.appendChild(option);
-                            });
+            // Sélectionner le professeur par défaut
+            if (selectedProfesseurId) {
+                professeurOptions.forEach(option => {
+                    if (option.getAttribute('data-id') === selectedProfesseurId) {
+                        option.classList.add('selected');
+                    }
+                });
+                professeurHidden.value = selectedProfesseurId;
+            }
+            
+            // Gestion de la sélection d'un professeur
+            professeurOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Désélectionner tous les autres
+                    professeurOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Sélectionner celui-ci
+                    this.classList.add('selected');
+                    // Mettre à jour le champ caché
+                    professeurHidden.value = this.getAttribute('data-id');
+                    // Effacer l'erreur
+                    clearError('professeur');
+                    // Mettre à jour les matières
+                    updateMatieres();
+                });
+            });
+            
+            // Fonction de recherche
+            function filterProfesseur() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let visibleCount = 0;
+                
+                professeurOptions.forEach(option => {
+                    const name = option.getAttribute('data-name');
+                    if (name.includes(searchTerm) || searchTerm === '') {
+                        option.classList.remove('hidden-option');
+                        option.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        option.classList.add('hidden-option');
+                        option.style.display = 'none';
+                    }
+                });
+                
+                // Mettre à jour le compteur
+                const visibleCountSpan = document.getElementById('visibleCount');
+                if (visibleCountSpan) {
+                    visibleCountSpan.textContent = visibleCount;
+                }
+            }
+            
+            // Écouteur d'événement pour la recherche
+            if (searchInput) {
+                searchInput.addEventListener('input', filterProfesseur);
+            }
+            
+            const inputs = {
+                nom: document.getElementById('id_nom'),
+                matiere: document.getElementById('id_matiere'),
+                nombre_etudiants: document.getElementById('id_nombre_etudiants')
+            };
+
+            const errors = {
+                nom: document.getElementById('nom_error'),
+                professeur: document.getElementById('professeur_error'),
+                matiere: document.getElementById('matiere_error'),
+                nombre_etudiants: document.getElementById('nombre_etudiants_error')
+            };
+
+            function showError(field, message) {
+                if (field === 'professeur') {
+                    professeurList.classList.add('error');
+                } else if (inputs[field]) {
+                    inputs[field].classList.add('error');
+                }
+                if (errors[field]) {
+                    errors[field].textContent = message;
+                    errors[field].classList.add('show');
+                }
+            }
+
+            function clearError(field) {
+                if (field === 'professeur') {
+                    professeurList.classList.remove('error');
+                } else if (inputs[field]) {
+                    inputs[field].classList.remove('error');
+                }
+                if (errors[field]) {
+                    errors[field].classList.remove('show');
+                }
+            }
+
+            function validateField(field, value) {
+                clearError(field);
+
+                if (field === 'professeur') {
+                    if (!value || value === '') {
+                        showError(field, "Champ obligatoire");
+                        return false;
+                    }
+                    return true;
+                }
+
+                if (!value || value === '') {
+                    showError(field, "Champ obligatoire");
+                    return false;
+                }
+
+                if (field === 'nom') {
+                    if (value.length < 2) {
+                        showError(field, "Le nom doit contenir au moins 2 caractères");
+                        return false;
+                    }
+                }
+
+                if (field === 'nombre_etudiants') {
+                    const num = parseInt(value);
+                    if (isNaN(num) || num < 1) {
+                        showError(field, "Le nombre doit être supérieur à 0");
+                        return false;
+                    }
+                    if (num > 500) {
+                        showError(field, "Le nombre ne peut pas dépasser 500");
+                        return false;
+                    }
+                }
+
+                if (field === 'matiere') {
+                    if (!value) {
+                        showError(field, "Champ obligatoire");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            function updateMatieres() {
+                const matiereSelect = document.getElementById('id_matiere');
+                const professeurId = professeurHidden.value;
+                
+                if (professeurId) {
+                    fetch(`/professeurs/${professeurId}/matieres/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            matiereSelect.innerHTML = '<option value="">Choisir une matière</option>';
                             
-                            // Si on est en mode modification, sélectionner la matière actuelle
-                            const currentMatiereId = "{{ form.instance.matiere.id|default:'' }}";
-                            if (currentMatiereId) {
-                                matiereSelect.value = currentMatiereId;
+                            if (data.length > 0) {
+                                data.forEach(matiere => {
+                                    const option = document.createElement('option');
+                                    option.value = matiere.id;
+                                    option.textContent = matiere.nom;
+                                    matiereSelect.appendChild(option);
+                                });
+                                
+                                const currentMatiereId = "{{ form.instance.matiere.id|default:'' }}";
+                                if (currentMatiereId) {
+                                    matiereSelect.value = currentMatiereId;
+                                }
+                                clearError('matiere');
+                            } else {
+                                matiereSelect.innerHTML = '<option value="">Aucune matière disponible</option>';
+                                showError('matiere', 'Ce professeur n\'a pas de matière assignée');
                             }
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        matiereSelect.innerHTML = '<option value="">---------</option>';
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            matiereSelect.innerHTML = '<option value="">Erreur de chargement</option>';
+                        });
+                } else {
+                    matiereSelect.innerHTML = '<option value="">Choisir une matière</option>';
+                    clearError('matiere');
+                }
+            }
+
+            // Écouteurs d'événements pour la validation
+            Object.keys(inputs).forEach(field => {
+                if (inputs[field]) {
+                    inputs[field].addEventListener('input', function() {
+                        validateField(field, this.value);
                     });
-            } else {
-                matiereSelect.innerHTML = '<option value="">---------</option>';
-            }
-        }
-        
-        if (professeurSelect) {
-            professeurSelect.addEventListener('change', updateMatieres);
-            
-            // Initialiser au chargement si un professeur est déjà sélectionné
-            if (professeurSelect.value) {
-                updateMatieres();
-            }
-        }
-    });
-</script>
+
+                    inputs[field].addEventListener('blur', function() {
+                        validateField(field, this.value);
+                    });
+                }
+            });
+
+            // Validation du formulaire avant soumission
+            const form = document.getElementById('groupeForm');
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                if (!validateField('professeur', professeurHidden.value)) {
+                    isValid = false;
+                }
+                
+                Object.keys(inputs).forEach(field => {
+                    if (inputs[field] && !validateField(field, inputs[field].value)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    const firstError = document.querySelector('.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
